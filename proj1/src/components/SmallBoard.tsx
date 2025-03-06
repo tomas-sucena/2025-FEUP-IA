@@ -13,18 +13,24 @@ interface SmallBoardProps {
 
 export default function SmallBoard({ rows, columns }: SmallBoardProps) {
   // a function that repeats an element n times
-  const repeat = (n: number, el: React.ReactNode) => {
-    return Array.apply(null, Array(n)).map((_) => el);
+  const range = (n: number) => {
+    return Array(n)
+      .fill(0)
+      .map((_, index) => index);
   };
+
+  // initialize the board
+  const board: string[] = Array(rows * columns).fill('');
 
   return (
     <div className="small-board">
-      {repeat(
-        rows,
+      {range(rows).map((i) => (
         <div className="small-board-row">
-          {repeat(columns, <Tile symbol="X" />)}
-        </div>,
-      )}
+          {range(columns).map((j) => (
+            <Tile symbol={board[i * rows + j]} />
+          ))}
+        </div>
+      ))}
     </div>
   );
 }
