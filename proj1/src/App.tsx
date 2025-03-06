@@ -1,5 +1,5 @@
 // components
-import Board from './components/Board';
+import SmallBoard from './components/SmallBoard';
 
 // styling
 import './App.css';
@@ -9,7 +9,7 @@ export default function App() {
     <div className="App">
       <title>Ultimate Tic-Tac-Toe</title>
       <header className="App-header">
-        <Board size={9} />
+        <SmallBoard rows={3} columns={3} />
       </header>
     </div>
   );
