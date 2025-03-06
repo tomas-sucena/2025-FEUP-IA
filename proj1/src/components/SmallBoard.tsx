@@ -13,8 +13,8 @@ interface SmallBoardProps {
 
 export default function SmallBoard({ rows, columns }: SmallBoardProps) {
   // a function that repeats an element n times
-  const repeat = (n: number, node: React.ReactElement) => {
-    return Array(n).fill(node);
+  const repeat = (n: number, el: React.ReactNode) => {
+    return Array.apply(null, Array(n)).map((_) => el);
   };
 
   return (
