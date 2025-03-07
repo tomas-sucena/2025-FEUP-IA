@@ -1,5 +1,8 @@
 import { useState } from 'react';
 
+// algorithms
+import { checkWinner } from '../algorithms/ai';
+
 // components
 import Tile from './Tile';
 
@@ -22,38 +25,38 @@ export default function SmallBoard({
   columns,
   initialBoard,
 }: SmallBoardProps) {
-  // a function that repeats an element n times
-  const range = (n: number) => {
-    return Array(n)
-      .fill(0)
-      .map((_, index) => index);
-  };
-
   // initialize the board
   const [board, setBoard] = useState(
     initialBoard ?? Array(rows * columns).fill(''),
   );
   const [xIsNext, setXisNext] = useState(true);
+  const [winner, setWinner] = useState('');
 
   // a function for handling tile clicks
   function handleTileClick(index: number) {
     // if the tile already has a marker, do nothing
-    if (board[index]) {
+    if (winner || board[index]) {
       return;
     }
 
+    const marker = xIsNext ? 'X' : 'O';
     const nextBoard = [...board];
-    nextBoard[index] = xIsNext ? 'X' : 'O';
+    nextBoard[index] = marker;
 
     setBoard(nextBoard);
     setXisNext(!xIsNext);
+
+    if (checkWinner(nextBoard, rows, columns, marker)) {
+      console.log(`Winner: ${marker}`);
+      setWinner(marker);
+    }
   }
 
   return (
     <div className="small-board">
-      {range(rows).map((i) => (
+      {Array.from({ length: rows }).map((_, i) => (
         <div className="small-board-row">
-          {range(columns).map((j) => {
+          {Array.from({ length: columns }).map((_, j) => {
             const index = i * rows + j; // the index of the tile
             return (
               <Tile
