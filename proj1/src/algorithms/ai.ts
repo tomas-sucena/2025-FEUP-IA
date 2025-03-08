@@ -6,7 +6,9 @@ export function checkWinner(
 ): boolean {
   // check the rows
   for (let i = 0; i < rows; ++i) {
-    if (board.slice(i, i + rows).every((el) => el === player)) {
+    const rowStart = i * rows;
+
+    if (board.slice(rowStart, rowStart + rows).every((el) => el === player)) {
       return true;
     }
   }
