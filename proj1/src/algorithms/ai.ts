@@ -16,7 +16,7 @@ export function checkWinner(
     let allEqual = true;
 
     for (let i = 0; allEqual && i < rows; ++i) {
-      allEqual &&= board[i * rows + j] === player;
+      allEqual &&= (board[i * rows + j] === player);
     }
 
     if (allEqual) {

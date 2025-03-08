@@ -14,22 +14,25 @@ interface SmallBoardProps {
   rows: number;
   /** the number of columns of the small board */
   columns: number;
-  /** indicates if the player that will play next has the X marker */
-  //xIsNext: boolean;
   /** the initial small board configuration, if any */
   initialBoard?: string[];
+  /** 'true' if player 1 will play next, 'false' if its player 2 */
+  player: boolean;
+  /** a function that toggles the player */
+  togglePlayer: () => void;
 }
 
 export default function SmallBoard({
   rows,
   columns,
   initialBoard,
+  player,
+  togglePlayer,
 }: SmallBoardProps) {
   // initialize the board
   const [board, setBoard] = useState(
     initialBoard ?? Array(rows * columns).fill(''),
   );
-  const [xIsNext, setXisNext] = useState(true);
   const [winner, setWinner] = useState('');
 
   // a function for handling tile clicks
@@ -39,12 +42,12 @@ export default function SmallBoard({
       return;
     }
 
-    const marker = xIsNext ? 'X' : 'O';
+    const marker = player ? 'X' : 'O';
     const nextBoard = [...board];
     nextBoard[index] = marker;
 
     setBoard(nextBoard);
-    setXisNext(!xIsNext);
+    togglePlayer();
 
     if (checkWinner(nextBoard, rows, columns, marker)) {
       console.log(`Winner: ${marker}`);
