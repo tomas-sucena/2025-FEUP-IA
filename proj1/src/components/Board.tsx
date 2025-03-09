@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import GameState from '../algorithms/state';
+import GameController from '../game/controller';
+import GameState from '../game/state';
 
 // components
 import SmallBoard from './SmallBoard';
@@ -17,18 +18,13 @@ interface BoardProps {
 export default function Board({ size, initialState }: BoardProps) {
   // initialize the game state
   const [state, setState] = useState(initialState ?? new GameState({ size }));
+  const controller = new GameController(size);
 
   // a function to be called when a tile is clicked
-  const handleTileClick = (smallBoardIndex: number, tileIndex: number) => {
-    const smallBoard = state.tiles[smallBoardIndex];
-
-    // if the tile already has a symbol, do nothing
-    if (state.boards[smallBoardIndex] || smallBoard[tileIndex]) {
-      return;
+  const handleTileClick = (boardIndex: number, tileIndex: number) => {
+    if (controller.makeMove(state, boardIndex, tileIndex)) {
+      setState(new GameState(state));
     }
-
-    state.makeMove(smallBoardIndex, tileIndex);
-    setState(new GameState(state));
   };
 
   return (
