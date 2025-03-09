@@ -19,9 +19,9 @@ export default class GameController {
     }
 
     // columns
-    for (let j = 0; j < area; j += size) {
+    for (let j = 0; j < size; ++j) {
       this.victoryPatterns.push(
-        Array.from({ length: size }, (_, i) => i + j * size),
+        Array.from({ length: size }, (_, i) => i * size + j),
       );
     }
 
@@ -53,10 +53,9 @@ export default class GameController {
     tileIndex: number,
   ): boolean {
     return (
-      state.nextBoardIndex < 0 ||
-      (state.nextBoardIndex === boardIndex &&
-        state.boards[boardIndex] === '' &&
-        state.tiles[boardIndex][tileIndex] === '')
+      state.boards[boardIndex] === '' &&
+      (state.nextBoardIndex < 0 || state.nextBoardIndex === boardIndex) &&
+      state.tiles[boardIndex][tileIndex] === ''
     );
   }
 
