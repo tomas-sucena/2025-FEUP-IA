@@ -12,3 +12,11 @@
 .tile:hover {
   background-color: #696969;
 }
+
+.tile[data-symbol='X'] {
+  background-color: red;
+}
+
+.tile[data-symbol='O'] {
+  background-color: blue;
+}

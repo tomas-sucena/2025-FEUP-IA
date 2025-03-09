@@ -28,16 +28,18 @@ export default function Board({ size, initialState }: BoardProps) {
   };
 
   return (
-    <div className="board">
+    <div id="board">
       {Array.from({ length: size }).map((_, i) => (
-        <div className="board-row">
+        <div className="board-row" key={i}>
           {Array.from({ length: size }).map((_, j) => {
             const index = i * size + j; // the index of the small board
             return (
               <SmallBoard
                 size={size}
                 tiles={state.tiles[index]}
+                highlight={state.nextBoardIndex === index}
                 handleTileClick={handleTileClick.bind(null, index)}
+                key={j}
               />
             );
           })}

@@ -10,7 +10,11 @@ interface TileProps {
 
 export default function Tile({ symbol, handleTileClick }: TileProps) {
   return (
-    <button className="tile" onClick={handleTileClick}>
+    <button
+      className="tile"
+      onClick={handleTileClick}
+      data-symbol={symbol || null}
+    >
       {symbol}
     </button>
   );

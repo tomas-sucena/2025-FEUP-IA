@@ -3,6 +3,10 @@
   flex-direction: column;
 }
 
+.small-board[data-highlight] {
+  background-color: #7e7e7e;
+}
+
 .small-board-row {
   display: flex;
   flex-direction: row;
