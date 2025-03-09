@@ -1,15 +1,16 @@
+// styling
 import './Tile.css';
 
 interface TileProps {
-  /** the symbol that is marked on the tile */
+  /** the symbol on the tile */
   symbol: string;
-  /** a function for handling tile clicks */
-  handleClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  /** a function to be called when a tile is clicked */
+  handleTileClick: () => void;
 }
 
-export default function Tile({ symbol, handleClick }: TileProps) {
+export default function Tile({ symbol, handleTileClick }: TileProps) {
   return (
-    <button className="tile" onClick={handleClick}>
+    <button className="tile" onClick={handleTileClick}>
       {symbol}
     </button>
   );
