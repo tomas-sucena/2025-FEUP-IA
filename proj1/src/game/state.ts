@@ -17,6 +17,9 @@ export default class GameState {
   nextPlayer: string; // the symbol of the player that will play next
   nextBoardIndex: number; // the index of the small board the next player has to play in
 
+  /**
+   * Initializes the game state.
+   */
   constructor({ size, boards, tiles, nextPlayer, nextBoardIndex }: IGameState) {
     size ??= 3;
     const area = size * size;
@@ -26,5 +29,19 @@ export default class GameState {
       tiles ?? Array.from({ length: area }, () => new Array(area).fill(''));
     this.nextPlayer = nextPlayer ?? 'X';
     this.nextBoardIndex = nextBoardIndex ?? -1;
+  }
+
+  /**
+   * Verifies if a move is valid.
+   * @param boardIndex the index of the small board
+   * @param tileIndex the index of the tile
+   * @returns true if the move is valid, false otherwise
+   */
+  isValidMove(boardIndex: number, tileIndex: number): boolean {
+    return (
+      this.boards[boardIndex] === '' &&
+      (this.nextBoardIndex < 0 || this.nextBoardIndex === boardIndex) &&
+      this.tiles[boardIndex][tileIndex] === ''
+    );
   }
 }

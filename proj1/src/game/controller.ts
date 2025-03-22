@@ -45,30 +45,11 @@ export default class GameController {
    * @param state the game state
    * @param boardIndex the index of the small board
    * @param tileIndex the index of the tile
-   * @returns true if the move is valid, false otherwise
-   */
-  isValidMove(
-    state: GameState,
-    boardIndex: number,
-    tileIndex: number,
-  ): boolean {
-    return (
-      state.boards[boardIndex] === '' &&
-      (state.nextBoardIndex < 0 || state.nextBoardIndex === boardIndex) &&
-      state.tiles[boardIndex][tileIndex] === ''
-    );
-  }
-
-  /**
-   * Verifies if a move is valid and, if it its, updates the state accordingly.
-   * @param state the game state
-   * @param boardIndex the index of the small board
-   * @param tileIndex the index of the tile
    * @returns true if the move was made, false otherwise
    */
   makeMove(state: GameState, boardIndex: number, tileIndex: number): boolean {
     // verify if the move is valid
-    if (!this.isValidMove(state, boardIndex, tileIndex)) {
+    if (!state.isValidMove(boardIndex, tileIndex)) {
       return false;
     }
 
