@@ -1,3 +1,8 @@
+/**
+ * An array that represents a move.
+ */
+type Move = [number, number];
+
 interface IGameState {
   /** the number of rows and columns of the board */
   size?: number;
@@ -43,5 +48,21 @@ export default class GameState {
       (this.nextBoardIndex < 0 || this.nextBoardIndex === boardIndex) &&
       this.tiles[boardIndex][tileIndex] === ''
     );
+  }
+
+  getValidMoves(): Move[] {
+    // a function for determining the valid moves within a small board
+    const getValidTiles = (boardIndex: number) =>
+      this.tiles[boardIndex].reduce((validMoves: Move[], symbol, tileIndex) => {
+        if (symbol === '') {
+          validMoves.push([boardIndex, tileIndex]);
+        }
+
+        return validMoves;
+      }, []);
+
+    return this.nextBoardIndex < 0
+      ? this.tiles.flatMap((_, boardIndex) => getValidTiles(boardIndex)) // all small boards are available
+      : getValidTiles(this.nextBoardIndex); // the player can only play on a specific small board
   }
 }
