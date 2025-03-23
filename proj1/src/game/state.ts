@@ -1,7 +1,7 @@
 /**
  * An array that represents a move.
  */
-type Move = [number, number];
+export type Move = [number, number];
 
 interface IGameState {
   /** the number of rows and columns of the board */
@@ -17,10 +17,22 @@ interface IGameState {
 }
 
 export default class GameState {
-  boards: string[]; // an array that represents the small boards
-  tiles: string[][]; // a 2D array that represents the tiles on the board
-  nextPlayer: string; // the symbol of the player that will play next
-  nextBoardIndex: number; // the index of the small board the next player has to play in
+  /**
+   * An array that represents the small boards.
+   */
+  boards: string[];
+  /**
+   * A 2D array that represents the tiles on the board.
+   */
+  tiles: string[][];
+  /**
+   * The symbol of the player that will play next.
+   */
+  nextPlayer: string;
+  /**
+   * The index of the small board the next player has to play in.
+   */
+  nextBoardIndex: number;
 
   /**
    * Initializes the game state.
@@ -50,6 +62,10 @@ export default class GameState {
     );
   }
 
+  /**
+   * Computes the valid moves for the current turn.
+   * @returns the valid moves for the current turn
+   */
   getValidMoves(): Move[] {
     // a function for determining the valid moves within a small board
     const getValidTiles = (boardIndex: number) =>
@@ -63,6 +79,6 @@ export default class GameState {
 
     return this.nextBoardIndex < 0
       ? this.tiles.flatMap((_, boardIndex) => getValidTiles(boardIndex)) // all small boards are available
-      : getValidTiles(this.nextBoardIndex); // the player can only play on a specific small board
+      : getValidTiles(this.nextBoardIndex); // only a specific small board is available
   }
 }
