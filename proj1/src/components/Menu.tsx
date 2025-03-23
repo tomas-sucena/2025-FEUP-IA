@@ -3,15 +3,18 @@ import './Menu.css';
 
 interface MenuProps {
   onNewGame: () => void;
+  onContinue: () => void;
   onCredits: () => void;
+  hasExistingGame: boolean;
 }
 
-const Menu: React.FC<MenuProps> = ({ onNewGame, onCredits }) => {
+const Menu: React.FC<MenuProps> = ({ onNewGame, onContinue, onCredits, hasExistingGame }) => {
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
   
+  // Create menu items conditionally
   const menuItems = [
     { id: 1, label: 'New Game', action: onNewGame },
-    { id: 2, label: 'Continue', action: () => console.log('Continue clicked') },
+    ...(hasExistingGame ? [{ id: 2, label: 'Continue', action: onContinue }] : []),
     { id: 3, label: 'Customize', action: () => console.log('Customize clicked') },
     { id: 4, label: 'Difficulty', action: () => console.log('Difficulty clicked') },
     { id: 5, label: 'Credits', action: onCredits },

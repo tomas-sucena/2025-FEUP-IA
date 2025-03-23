@@ -26,7 +26,6 @@ const Credits: React.FC<CreditsProps> = ({ onBackToMenu }) => {
           </div>
           
           <div className="credits-project">
-            <h2 className="credits-subtitle">Game</h2>
             <p className="project-name">Ultimate Cock Game</p>
             <p className="project-year">© 2025</p>
           </div>

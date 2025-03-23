@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import GameController from '../game/controller';
 import GameState from '../game/state';
 
@@ -13,17 +13,27 @@ interface BoardProps {
   size: number;
   /** the initial game state */
   initialState?: GameState;
+  /** callback for when the game state changes */
+  onStateChange?: (state: GameState) => void;
 }
 
-export default function Board({ size, initialState }: BoardProps) {
+export default function Board({ size, initialState, onStateChange }: BoardProps) {
   // initialize the game state
   const [state, setState] = useState(initialState ?? new GameState({ size }));
   const controller = new GameController(size);
 
+  // Call onStateChange whenever state changes
+  useEffect(() => {
+    if (onStateChange) {
+      onStateChange(state);
+    }
+  }, [state, onStateChange]);
+
   // a function to be called when a tile is clicked
   const handleTileClick = (boardIndex: number, tileIndex: number) => {
     if (controller.makeMove(state, boardIndex, tileIndex)) {
-      setState(new GameState(state));
+      const newState = new GameState(state);
+      setState(newState);
     }
   };
 

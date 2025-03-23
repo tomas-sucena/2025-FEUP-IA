@@ -3,19 +3,19 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background: linear-gradient(to bottom, #4b006e, #000000);
+    background-color: #282c34; /* Dark charcoal background matching the image */
   }
   
   .menu-panel {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(20, 22, 28, 0.8);
     padding: 2rem;
     border-radius: 0.5rem;
-    border: 2px solid #a855f7;
+    border: 2px solid #d1d1d1;
     width: 16rem;
   }
   
   .menu-title {
-    color: #c084fc;
+    color: #d1d1d1;
     text-align: center;
     font-size: 1.5rem;
     font-weight: bold;
@@ -35,24 +35,24 @@
     transition: all 0.2s;
     border-radius: 0.25rem;
     background-color: transparent;
-    color: #c084fc;
+    color: #d1d1d1;
     border: none;
     cursor: pointer;
   }
   
   .menu-item:hover {
-    background-color: #4c1d95;
+    background-color: #3a3e47;
   }
   
   .menu-item-active {
-    background-color: #6d28d9;
+    background-color: #4a4f5a;
     color: white;
     transform: translateX(0.5rem);
   }
   
   .menu-footer {
     margin-top: 2rem;
-    color: #c084fc;
+    color: #a0a0a0;
     font-size: 0.75rem;
     text-align: center;
   }

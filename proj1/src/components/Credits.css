@@ -3,20 +3,20 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background: linear-gradient(to bottom, #4b006e, #000000);
+    background-color: #282c34; /* Dark charcoal background matching the image */
   }
   
   .credits-panel {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(20, 22, 28, 0.8);
     padding: 2rem;
     border-radius: 0.5rem;
-    border: 2px solid #a855f7;
+    border: 2px solid #d1d1d1;
     width: 24rem;
     max-width: 90vw;
   }
   
   .credits-title {
-    color: #c084fc;
+    color: #d1d1d1;
     text-align: center;
     font-size: 2rem;
     font-weight: bold;
@@ -31,7 +31,7 @@
   }
   
   .credits-subtitle {
-    color: #a855f7;
+    color: #b8b8b8;
     font-size: 1.25rem;
     margin-bottom: 1rem;
     text-align: center;
@@ -48,13 +48,13 @@
   }
   
   .creator-name {
-    color: #e9d5ff;
+    color: #ffffff;
     font-size: 1.5rem;
     margin-bottom: 0.25rem;
   }
   
   .creator-role {
-    color: #c084fc;
+    color: #d1d1d1;
     font-style: italic;
   }
   
@@ -64,20 +64,20 @@
   }
   
   .project-name {
-    color: #e9d5ff;
+    color: #ffffff;
     font-size: 1.25rem;
     margin-bottom: 0.5rem;
   }
   
   .project-year {
-    color: #c084fc;
+    color: #d1d1d1;
   }
   
   .back-button-credits {
     display: block;
     margin: 2rem auto 0;
     padding: 0.5rem 1.5rem;
-    background-color: #6d28d9;
+    background-color: #4a4f5a;
     color: white;
     border: none;
     border-radius: 0.25rem;
@@ -87,5 +87,5 @@
   }
   
   .back-button-credits:hover {
-    background-color: #4c1d95;
+    background-color: #3a3e47;
   }
