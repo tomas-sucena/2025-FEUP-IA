@@ -33,6 +33,8 @@ export default class GameState {
    * The index of the small board the next player has to play in.
    */
   nextBoardIndex: number;
+  /** an array containing all possible tile combinations that lead to victory */
+  victoryPatterns: number[][];
 
   /**
    * Initializes the game state.
@@ -46,6 +48,40 @@ export default class GameState {
       tiles ?? Array.from({ length: area }, () => new Array(area).fill(''));
     this.nextPlayer = nextPlayer ?? 'X';
     this.nextBoardIndex = nextBoardIndex ?? -1;
+  }
+
+  /**
+   * Computes all possible tile combinations that lead to victory.
+   * @param size the number of rows and columns of the board
+   * @returns an array containing all possible tile combinations that lead to victory
+   */
+  private getVictoryPatterns(size: number): number[][] {
+    const area = size * size;
+
+    // initialize the victory patterns
+    const victoryPatterns: number[][] = [];
+
+    // rows
+    for (let i = 0; i < area; i += size) {
+      this.victoryPatterns.push(Array.from({ length: size }, (_, j) => i + j));
+    }
+
+    // columns
+    for (let j = 0; j < size; ++j) {
+      this.victoryPatterns.push(
+        Array.from({ length: size }, (_, i) => i * size + j),
+      );
+    }
+
+    // diagonals
+    this.victoryPatterns.push(
+      Array.from({ length: size }, (_, i) => i * size + i),
+    );
+    this.victoryPatterns.push(
+      Array.from({ length: size }, (_, i) => area - (i * size + i + 1)),
+    );
+
+    return victoryPatterns;
   }
 
   /**
@@ -80,5 +116,46 @@ export default class GameState {
     return this.nextBoardIndex < 0
       ? this.tiles.flatMap((_, boardIndex) => getValidTiles(boardIndex)) // all small boards are available
       : getValidTiles(this.nextBoardIndex); // only a specific small board is available
+  }
+
+  /**
+   * Verifies if a player has won a board.
+   * @param board the board
+   * @param player the symbol of the player
+   * @returns true if the player won the board, false otherwise
+   */
+  checkWinner(board: string[], player: string) {
+    return this.victoryPatterns.some((pattern) =>
+      pattern.every((i) => board[i] === player),
+    );
+  }
+
+  /**
+   * Verifies if a move is valid and, if it its, updates the state accordingly.
+   * @param boardIndex the index of the small board
+   * @param tileIndex the index of the tile
+   * @returns true if the move was made, false otherwise
+   */
+  makeMove([boardIndex, tileIndex]: Move): boolean {
+    // verify if the move is valid
+    if (!this.isValidMove(boardIndex, tileIndex)) {
+      return false;
+    }
+
+    const smallBoard = this.tiles[boardIndex];
+    smallBoard[tileIndex] = this.nextPlayer;
+
+    // verify if the player won the small board
+    if (this.checkWinner(smallBoard, this.nextPlayer)) {
+      this.boards[boardIndex] = this.nextPlayer;
+    }
+
+    // toggle the player
+    this.nextPlayer = this.nextPlayer === 'X' ? 'O' : 'X';
+
+    // switch the board
+    this.nextBoardIndex = this.boards[tileIndex] ? -1 : tileIndex;
+
+    return true;
   }
 }
