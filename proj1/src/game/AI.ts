@@ -2,23 +2,32 @@ import GameState, { Move } from './state';
 
 class Node {
   state: GameState;
-  move: Move;
+  move?: Move;
   value: number;
-  children?: Node[];
+  private children?: Node[];
 
-  constructor(state: GameState, move: Move, value: number) {
+  constructor(state: GameState, move?: Move) {
     this.state = state;
     this.move = move;
-    this.value = value;
+    this.value = 0;
   }
 
   getChildren() {
-    return this.children ??=
-      this.state.getValidMoves().map((move) => new Node(this.state, move, ));
+    return (this.children ??= this.state
+      .getValidMoves()
+      .map((move) => new Node(GameState.fromState(this.state), move)));
   }
 
-  isTerminal() {
+  isTerminal(): boolean {
     return this.getChildren().length === 0;
+  }
+
+  static max(lhs: Node, rhs: Node): Node {
+    return lhs.value > rhs.value ? lhs : rhs;
+  }
+
+  static min(lhs: Node, rhs: Node): Node {
+    return lhs.value < rhs.value ? lhs : rhs;
   }
 }
 
@@ -47,23 +56,61 @@ export default class AI {
     return 0;
   }
 
-  minimaxDFS(node: Node, depth: number, maximize: boolean, alpha: number, beta:number) {
+  minimaxDFS(
+    node: Node,
+    depth: number,
+    maximize: boolean,
+    alpha: number,
+    beta: number,
+  ): Node {
     // verify if the depth limit has been reached or the node is terminal
     if (depth === 0 || node.isTerminal()) {
-      node.value = this.getMoveValue()
+      node.value = this.getMoveValue(node.state, node.move!);
       return node;
     }
 
-    let bestNode, value = -Infinity;
+    // define the algorithm variables
+    let bestNode = new Node(node.state);
 
-    for (const child of node.getChildren()) {
-      value = Math.max(value, this.minimaxDFS(child))
+    if (maximize) {
+      // maximizing player
+      bestNode.value = -Infinity;
+
+      for (let child of node.getChildren()) {
+        bestNode = Node.max(
+          this.minimaxDFS(child, depth - 1, false, alpha, beta),
+          bestNode,
+        );
+
+        if (bestNode.value > beta) {
+          break; // beta cutoff
+        }
+
+        alpha = Math.max(bestNode.value, alpha);
+      }
+    } else {
+      // minimizing player
+      bestNode.value = Infinity;
+
+      for (let child of node.getChildren()) {
+        bestNode = Node.min(
+          this.minimaxDFS(child, depth - 1, true, alpha, beta),
+          bestNode,
+        );
+
+        if (bestNode.value < alpha) {
+          break; // alpha cutoff
+        }
+
+        beta = Math.min(bestNode.value, beta);
+      }
     }
 
     return bestNode;
   }
 
-  minimax(state: GameState, depth: number, maximize: boolean, alpha: number, beta: number) {
-    return this.minimaxDFS(new Node(state, move), depth, true, -Infinity, Infinity).move;
+  minimax(state: GameState, depth: number) {
+    return this.minimaxDFS(new Node(state), depth, true, -Infinity, Infinity)
+      .move;
   }
 }

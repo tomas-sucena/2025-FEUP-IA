@@ -4,50 +4,81 @@
 export type Move = [number, number];
 
 interface IGameState {
-  /** the number of rows and columns of the board */
-  size?: number;
-  /** an array that represents the small boards */
-  boards?: string[];
-  /** a 2D array that represents the tiles on the board */
-  tiles?: string[][];
-  /** the symbol of the player that will play next */
-  nextPlayer?: string;
-  /* the index of the small board the next player has to play in */
-  nextBoardIndex?: number;
+  /** An array that represents the small boards. */
+  boards: string[];
+  /** A 2D array that represents the tiles on the board. */
+  tiles: string[][];
+  /** The symbol of the player that will play next. */
+  nextPlayer: string;
+  /* The index of the small board the next player has to play in. */
+  nextBoardIndex: number;
+  /** An array containing all possible tile combinations that lead to victory. */
+  victoryPatterns: number[][];
 }
 
+/**
+ * The game state.
+ */
 export default class GameState {
-  /**
-   * An array that represents the small boards.
-   */
+  /** An array that represents the small boards. */
   boards: string[];
-  /**
-   * A 2D array that represents the tiles on the board.
-   */
+  /** A 2D array that represents the tiles on the board. */
   tiles: string[][];
-  /**
-   * The symbol of the player that will play next.
-   */
+  /** The symbol of the player that will play next. */
   nextPlayer: string;
-  /**
-   * The index of the small board the next player has to play in.
-   */
+  /** The index of the small board the next player has to play in. */
   nextBoardIndex: number;
-  /** an array containing all possible tile combinations that lead to victory */
-  victoryPatterns: number[][];
+  /** An array containing all possible tile combinations that lead to victory. */
+  private victoryPatterns: number[][];
 
   /**
    * Initializes the game state.
    */
-  constructor({ size, boards, tiles, nextPlayer, nextBoardIndex }: IGameState) {
-    size ??= 3;
+  private constructor({
+    boards,
+    tiles,
+    nextPlayer,
+    nextBoardIndex,
+    victoryPatterns,
+  }: IGameState) {
+    this.boards = boards;
+    this.tiles = tiles;
+    this.nextPlayer = nextPlayer;
+    this.nextBoardIndex = nextBoardIndex;
+    this.victoryPatterns = victoryPatterns;
+  }
+
+  /**
+   * Initializes a new game state according to the dimensions of the board.
+   * @param size the number of rows and columns of the board
+   * @returns a new game state
+   */
+  static fromSize(size: number): GameState {
     const area = size * size;
 
-    this.boards = boards ?? new Array(area).fill('');
-    this.tiles =
-      tiles ?? Array.from({ length: area }, () => new Array(area).fill(''));
-    this.nextPlayer = nextPlayer ?? 'X';
-    this.nextBoardIndex = nextBoardIndex ?? -1;
+    // initialize the game state
+    return new GameState({
+      boards: new Array(area).fill(''),
+      tiles: Array.from({ length: area }, () => new Array(area).fill('')),
+      nextPlayer: 'X',
+      nextBoardIndex: -1,
+      victoryPatterns: GameState.getVictoryPatterns(size),
+    });
+  }
+
+  /**
+   * Creates a copy of a game state.
+   * @param size the number of rows and columns of the board
+   * @returns a new game state
+   */
+  static fromState(state: GameState): GameState {
+    return new GameState({
+      boards: [...state.boards],
+      tiles: state.tiles.map((smallBoard) => [...smallBoard]),
+      nextPlayer: state.nextPlayer,
+      nextBoardIndex: state.nextBoardIndex,
+      victoryPatterns: state.victoryPatterns,
+    });
   }
 
   /**
@@ -55,7 +86,7 @@ export default class GameState {
    * @param size the number of rows and columns of the board
    * @returns an array containing all possible tile combinations that lead to victory
    */
-  private getVictoryPatterns(size: number): number[][] {
+  private static getVictoryPatterns(size: number): number[][] {
     const area = size * size;
 
     // initialize the victory patterns
@@ -63,21 +94,19 @@ export default class GameState {
 
     // rows
     for (let i = 0; i < area; i += size) {
-      this.victoryPatterns.push(Array.from({ length: size }, (_, j) => i + j));
+      victoryPatterns.push(Array.from({ length: size }, (_, j) => i + j));
     }
 
     // columns
     for (let j = 0; j < size; ++j) {
-      this.victoryPatterns.push(
+      victoryPatterns.push(
         Array.from({ length: size }, (_, i) => i * size + j),
       );
     }
 
     // diagonals
-    this.victoryPatterns.push(
-      Array.from({ length: size }, (_, i) => i * size + i),
-    );
-    this.victoryPatterns.push(
+    victoryPatterns.push(Array.from({ length: size }, (_, i) => i * size + i));
+    victoryPatterns.push(
       Array.from({ length: size }, (_, i) => area - (i * size + i + 1)),
     );
 
@@ -122,7 +151,7 @@ export default class GameState {
    * Verifies if a player has won a board.
    * @param board the board
    * @param player the symbol of the player
-   * @returns true if the player won the board, false otherwise
+   * @returns true if the player has won the board, false otherwise
    */
   checkWinner(board: string[], player: string) {
     return this.victoryPatterns.some((pattern) =>
