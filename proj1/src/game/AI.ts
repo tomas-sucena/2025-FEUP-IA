@@ -2,13 +2,13 @@ import GameState, { Move } from './state';
 
 class Node {
   state: GameState;
-  move?: Move;
+  move: Move;
   value: number;
   private children?: Node[];
 
   constructor(state: GameState, move?: Move) {
     this.state = state;
-    this.move = move;
+    this.move = move ?? [-1, -1];
     this.value = 0;
   }
 
@@ -59,58 +59,54 @@ export default class AI {
   minimaxDFS(
     node: Node,
     depth: number,
-    maximize: boolean,
     alpha: number,
     beta: number,
+    maximize: boolean,
   ): Node {
     // verify if the depth limit has been reached or the node is terminal
     if (depth === 0 || node.isTerminal()) {
-      node.value = this.getMoveValue(node.state, node.move!);
+      node.value = this.getMoveValue(node.state, node.move);
       return node;
     }
 
     // define the algorithm variables
     let bestNode = new Node(node.state);
+    let evaluator: (lhs: Node, rhs: Node) => Node;
+    let pruner: (node: Node) => boolean;
 
     if (maximize) {
-      // maximizing player
       bestNode.value = -Infinity;
-
-      for (let child of node.getChildren()) {
-        bestNode = Node.max(
-          this.minimaxDFS(child, depth - 1, false, alpha, beta),
-          bestNode,
-        );
-
-        if (bestNode.value > beta) {
-          break; // beta cutoff
-        }
-
-        alpha = Math.max(bestNode.value, alpha);
-      }
+      evaluator = Node.max;
+      pruner = (node: Node) => {
+        alpha = Math.max(node.value, alpha);
+        return node.value > beta;
+      };
     } else {
-      // minimizing player
       bestNode.value = Infinity;
+      evaluator = Node.min;
+      pruner = (node: Node) => {
+        beta = Math.min(node.value, beta);
+        return node.value < alpha;
+      };
+    }
 
-      for (let child of node.getChildren()) {
-        bestNode = Node.min(
-          this.minimaxDFS(child, depth - 1, true, alpha, beta),
-          bestNode,
-        );
+    // compute the best node
+    for (const child of node.getChildren()) {
+      bestNode = evaluator(
+        this.minimaxDFS(child, depth - 1, alpha, beta, !maximize),
+        bestNode,
+      );
 
-        if (bestNode.value < alpha) {
-          break; // alpha cutoff
-        }
-
-        beta = Math.min(bestNode.value, beta);
+      if (pruner(bestNode)) {
+        break;
       }
     }
 
     return bestNode;
   }
 
-  minimax(state: GameState, depth: number) {
-    return this.minimaxDFS(new Node(state), depth, true, -Infinity, Infinity)
+  minimax(state: GameState, depth: number): Move {
+    return this.minimaxDFS(new Node(state), depth, -Infinity, Infinity, true)
       .move;
   }
 }
