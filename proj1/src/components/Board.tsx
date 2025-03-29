@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import GameController from '../game/controller';
-import GameState from '../game/state';
+import { GameState } from '../game/state';
 
 // components
 import SmallBoard from './SmallBoard';
@@ -17,13 +16,12 @@ interface BoardProps {
 
 export default function Board({ size, initialState }: BoardProps) {
   // initialize the game state
-  const [state, setState] = useState(initialState ?? new GameState({ size }));
-  const controller = new GameController(size);
+  const [state, setState] = useState(initialState ?? GameState.fromSize(size));
 
   // a function to be called when a tile is clicked
   const handleTileClick = (boardIndex: number, tileIndex: number) => {
-    if (controller.makeMove(state, boardIndex, tileIndex)) {
-      setState(new GameState(state));
+    if (state.makeMove([boardIndex, tileIndex])) {
+      setState(GameState.fromState(state));
     }
   };
 

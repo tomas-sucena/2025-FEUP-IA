@@ -1,7 +1,7 @@
 /**
  * An array that represents a move.
  */
-export type Move = [number, number];
+export type GameMove = [number, number];
 
 interface IGameState {
   /** An array that represents the small boards. */
@@ -19,7 +19,7 @@ interface IGameState {
 /**
  * The game state.
  */
-export default class GameState {
+export class GameState {
   /** An array that represents the small boards. */
   boards: string[];
   /** A 2D array that represents the tiles on the board. */
@@ -131,16 +131,19 @@ export default class GameState {
    * Computes the valid moves for the current turn.
    * @returns the valid moves for the current turn
    */
-  getValidMoves(): Move[] {
+  getValidMoves(): GameMove[] {
     // a function for determining the valid moves within a small board
     const getValidTiles = (boardIndex: number) =>
-      this.tiles[boardIndex].reduce((validMoves: Move[], symbol, tileIndex) => {
-        if (symbol === '') {
-          validMoves.push([boardIndex, tileIndex]);
-        }
+      this.tiles[boardIndex].reduce(
+        (validMoves: GameMove[], symbol, tileIndex) => {
+          if (symbol === '') {
+            validMoves.push([boardIndex, tileIndex]);
+          }
 
-        return validMoves;
-      }, []);
+          return validMoves;
+        },
+        [],
+      );
 
     return this.nextBoardIndex < 0
       ? this.tiles.flatMap((_, boardIndex) => getValidTiles(boardIndex)) // all small boards are available
@@ -165,7 +168,7 @@ export default class GameState {
    * @param tileIndex the index of the tile
    * @returns true if the move was made, false otherwise
    */
-  makeMove([boardIndex, tileIndex]: Move): boolean {
+  makeMove([boardIndex, tileIndex]: GameMove): boolean {
     // verify if the move is valid
     if (!this.isValidMove(boardIndex, tileIndex)) {
       return false;

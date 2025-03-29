@@ -1,12 +1,12 @@
-import GameState, { Move } from './state';
+import { GameState, GameMove } from './state';
 
 class Node {
   state: GameState;
-  move: Move;
+  move: GameMove;
   value: number;
   private children?: Node[];
 
-  constructor(state: GameState, move?: Move) {
+  constructor(state: GameState, move?: GameMove) {
     this.state = state;
     this.move = move ?? [-1, -1];
     this.value = 0;
@@ -31,11 +31,14 @@ class Node {
   }
 }
 
-export default class AI {
-  chooseMove: (state: GameState) => Move;
+/**
+ * The computer player.
+ */
+export class GameAI {
+  chooseMove: (state: GameState) => GameMove;
 
   /**
-   * Initializes the AI player.
+   * Initializes the computer player.
    */
   constructor() {
     this.chooseMove = this.randomMove;
@@ -46,12 +49,12 @@ export default class AI {
    * @param state the game state
    * @returns a random valid move
    */
-  randomMove(state: GameState): Move {
+  randomMove(state: GameState): GameMove {
     const validMoves = state.getValidMoves();
     return validMoves[Math.floor(Math.random() * validMoves.length)];
   }
 
-  getMoveValue(state: GameState, move: Move) {
+  getMoveValue(state: GameState, move: GameMove) {
     // TODO
     return 0;
   }
@@ -105,7 +108,7 @@ export default class AI {
     return bestNode;
   }
 
-  minimax(state: GameState, depth: number): Move {
+  minimax(state: GameState, depth: number): GameMove {
     return this.minimaxDFS(new Node(state), depth, -Infinity, Infinity, true)
       .move;
   }
