@@ -14,9 +14,9 @@
 }
 
 .tile[data-symbol='X'] {
-  background-color: red;
+  background-color: #ff3c15;
 }
 
 .tile[data-symbol='O'] {
-  background-color: blue;
+  background-color: #694cff;
 }
