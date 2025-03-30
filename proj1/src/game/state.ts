@@ -14,10 +14,10 @@ export class GameMove {
 }
 
 interface IGameState {
-  /** An array that represents the small boards. */
-  boards: string[];
-  /** A 2D array that represents the tiles on the board. */
-  tiles: string[][];
+  /** An array that represents the big board. */
+  board: string[];
+  /** A 2D array that represents the small boards. */
+  smallBoards: string[][];
   /** The symbol of the player that will play next. */
   nextPlayer: string;
   /* The index of the small board the next player has to play in. */
@@ -30,10 +30,10 @@ interface IGameState {
  * The game state.
  */
 export class GameState {
-  /** An array that represents the small boards. */
-  boards: string[];
-  /** A 2D array that represents the tiles on the board. */
-  tiles: string[][];
+  /** An array that represents the big board. */
+  board: string[];
+  /** A 2D array that represents the small boards. */
+  smallBoards: string[][];
   /** The symbol of the player that will play next. */
   nextPlayer: string;
   /** The index of the small board the next player has to play in. */
@@ -45,14 +45,14 @@ export class GameState {
    * Initializes the game state.
    */
   private constructor({
-    boards,
-    tiles,
+    board: boards,
+    smallBoards: tiles,
     nextPlayer,
     nextBoardIndex,
     victoryPatterns,
   }: IGameState) {
-    this.boards = boards;
-    this.tiles = tiles;
+    this.board = boards;
+    this.smallBoards = tiles;
     this.nextPlayer = nextPlayer;
     this.nextBoardIndex = nextBoardIndex;
     this.victoryPatterns = victoryPatterns;
@@ -68,8 +68,8 @@ export class GameState {
 
     // initialize the game state
     return new GameState({
-      boards: new Array(area).fill(''),
-      tiles: Array.from({ length: area }, () => new Array(area).fill('')),
+      board: new Array(area).fill(''),
+      smallBoards: Array.from({ length: area }, () => new Array(area).fill('')),
       nextPlayer: 'X',
       nextBoardIndex: -1,
       victoryPatterns: GameState.getVictoryPatterns(size),
@@ -83,8 +83,8 @@ export class GameState {
    */
   static fromState(state: GameState): GameState {
     return new GameState({
-      boards: [...state.boards],
-      tiles: state.tiles.map((smallBoard) => [...smallBoard]),
+      board: [...state.board],
+      smallBoards: state.smallBoards.map((smallBoard) => [...smallBoard]),
       nextPlayer: state.nextPlayer,
       nextBoardIndex: state.nextBoardIndex,
       victoryPatterns: state.victoryPatterns,
@@ -131,9 +131,9 @@ export class GameState {
    */
   isValidMove(boardIndex: number, tileIndex: number): boolean {
     return (
-      this.boards[boardIndex] === '' &&
+      this.board[boardIndex] === '' &&
       (this.nextBoardIndex < 0 || this.nextBoardIndex === boardIndex) &&
-      this.tiles[boardIndex][tileIndex] === ''
+      this.smallBoards[boardIndex][tileIndex] === ''
     );
   }
 
@@ -144,7 +144,7 @@ export class GameState {
   getValidMoves(): GameMove[] {
     // a function for determining the valid moves within a small board
     const getValidTiles = (boardIndex: number) =>
-      this.tiles[boardIndex].reduce(
+      this.smallBoards[boardIndex].reduce(
         (validMoves: GameMove[], symbol, tileIndex) => {
           if (symbol === '') {
             validMoves.push(new GameMove(boardIndex, tileIndex));
@@ -156,7 +156,7 @@ export class GameState {
       );
 
     return this.nextBoardIndex < 0
-      ? this.tiles.flatMap((_, boardIndex) => getValidTiles(boardIndex)) // all small boards are available
+      ? this.smallBoards.flatMap((_, boardIndex) => getValidTiles(boardIndex)) // all small boards are available
       : getValidTiles(this.nextBoardIndex); // only a specific small board is available
   }
 
@@ -174,29 +174,29 @@ export class GameState {
 
   /**
    * Verifies if a move is valid and, if it its, updates the state accordingly.
-   * @param boardIndex the index of the small board
+   * @param smallBoardIndex the index of the small board
    * @param tileIndex the index of the tile
    * @returns true if the move was made, false otherwise
    */
-  makeMove(boardIndex: number, tileIndex: number): boolean {
+  makeMove(smallBoardIndex: number, tileIndex: number): boolean {
     // verify if the move is valid
-    if (!this.isValidMove(boardIndex, tileIndex)) {
+    if (!this.isValidMove(smallBoardIndex, tileIndex)) {
       return false;
     }
 
-    const smallBoard = this.tiles[boardIndex];
+    const smallBoard = this.smallBoards[smallBoardIndex];
     smallBoard[tileIndex] = this.nextPlayer;
 
     // verify if the player won the small board
     if (this.checkWinner(smallBoard, this.nextPlayer)) {
-      this.boards[boardIndex] = this.nextPlayer;
+      this.board[smallBoardIndex] = this.nextPlayer;
     }
 
     // toggle the player
     this.nextPlayer = this.nextPlayer === 'X' ? 'O' : 'X';
 
     // switch the board
-    this.nextBoardIndex = this.boards[tileIndex] ? -1 : tileIndex;
+    this.nextBoardIndex = this.board[tileIndex] ? -1 : tileIndex;
 
     return true;
   }

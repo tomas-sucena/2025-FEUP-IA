@@ -5,16 +5,12 @@ interface TileProps {
   /** the symbol on the tile */
   symbol: string;
   /** a function to be called when a tile is clicked */
-  handleTileClick: () => void;
+  onClick: () => void;
 }
 
-export default function Tile({ symbol, handleTileClick }: TileProps) {
+export default function Tile({ symbol, onClick }: TileProps) {
   return (
-    <button
-      className="tile"
-      onClick={handleTileClick}
-      data-symbol={symbol || null}
-    >
+    <button className="tile" onClick={onClick} data-symbol={symbol || null}>
       {symbol}
     </button>
   );

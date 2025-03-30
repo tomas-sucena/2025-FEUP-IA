@@ -1,11 +1,9 @@
-#board {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
+.board {
+  display: grid;
+  grid-template-rows: repeat(var(--size), auto);
+  grid-template-columns: repeat(var(--size), auto);
 }
 
-.board-row {
-  display: flex;
-  flex-direction: row;
+#big-board {
   gap: 0.5em;
 }
