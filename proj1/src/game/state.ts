@@ -29,7 +29,7 @@ export class GameState {
   /** The index of the small board the next player has to play in. */
   nextBoardIndex: number;
   /** An array containing all possible tile combinations that lead to victory. */
-  private victoryPatterns: number[][];
+  readonly victoryPatterns: number[][];
 
   /**
    * Initializes the game state.
