@@ -1,7 +1,17 @@
 /**
  * An array that represents a move.
  */
-export type GameMove = [number, number];
+export class GameMove {
+  boardIndex: number;
+  tileIndex: number;
+  player: string;
+
+  constructor(boardIndex: number, tileIndex: number, player?: string) {
+    this.boardIndex = boardIndex;
+    this.tileIndex = tileIndex;
+    this.player = player ?? '';
+  }
+}
 
 interface IGameState {
   /** An array that represents the small boards. */
@@ -137,7 +147,7 @@ export class GameState {
       this.tiles[boardIndex].reduce(
         (validMoves: GameMove[], symbol, tileIndex) => {
           if (symbol === '') {
-            validMoves.push([boardIndex, tileIndex]);
+            validMoves.push(new GameMove(boardIndex, tileIndex));
           }
 
           return validMoves;
@@ -168,7 +178,7 @@ export class GameState {
    * @param tileIndex the index of the tile
    * @returns true if the move was made, false otherwise
    */
-  makeMove([boardIndex, tileIndex]: GameMove): boolean {
+  makeMove(boardIndex: number, tileIndex: number): boolean {
     // verify if the move is valid
     if (!this.isValidMove(boardIndex, tileIndex)) {
       return false;

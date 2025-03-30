@@ -8,7 +8,7 @@ class Node {
 
   constructor(state: GameState, move?: GameMove) {
     this.state = state;
-    this.move = move ?? [-1, -1];
+    this.move = move ?? new GameMove(-1, -1);
     this.value = 0;
   }
 

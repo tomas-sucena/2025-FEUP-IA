@@ -20,7 +20,7 @@ export default function Board({ size, initialState }: BoardProps) {
 
   // a function to be called when a tile is clicked
   const handleTileClick = (boardIndex: number, tileIndex: number) => {
-    if (state.makeMove([boardIndex, tileIndex])) {
+    if (state.makeMove(boardIndex, tileIndex)) {
       setState(GameState.fromState(state));
     }
   };
