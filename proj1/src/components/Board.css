@@ -1,9 +1,10 @@
-.board {
+#board,
+.small-board {
   display: grid;
   grid-template-rows: repeat(var(--size), auto);
   grid-template-columns: repeat(var(--size), auto);
 }
 
-#big-board {
+#board {
   gap: 0.5em;
 }

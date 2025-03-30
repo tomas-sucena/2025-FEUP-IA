@@ -1,15 +1,22 @@
-import { Children } from 'react';
-
 // styling
 import './Board.css';
 
-export default function Board({ children }: React.PropsWithChildren) {
-  const smallBoards = children as React.ReactElement[];
+interface BoardProps {
+  /** the number of rows/columns of the board */
+  size: number;
+  /** the board tiles */
+  tiles: React.ReactElement[][];
+}
+
+export default function Board({ size, tiles: smallBoards }: BoardProps) {
+  const style = { '--size': size } as React.CSSProperties;
 
   return (
-    <div id="big-board" className="board">
+    <div id="board" style={style}>
       {smallBoards.map((smallBoard) => (
-        <div className="board">{smallBoard}</div>
+        <div className="small-board" style={style}>
+          {smallBoard}
+        </div>
       ))}
     </div>
   );

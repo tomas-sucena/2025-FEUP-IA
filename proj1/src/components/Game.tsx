@@ -16,23 +16,20 @@ export default function Game({ size }: { size: number }) {
     }
   };
 
-  // render the small boards
-  const smallBoards = state.smallBoards.map((smallBoard, smallBoardIndex) =>
+  // render the board tiles
+  const tiles = state.smallBoards.map((smallBoard, smallBoardIndex) =>
     smallBoard.map((tile, tileIndex) => (
       <Tile
         key={tileIndex}
         symbol={tile}
+        highlight={
+          state.nextBoardIndex < 0 || state.nextBoardIndex === smallBoardIndex
+        }
         onClick={onTileClick.bind(null, smallBoardIndex, tileIndex)}
       />
     )),
   );
 
-  // set the dimensions of the board in CSS
-  (document.getElementById('app') as HTMLElement).style.setProperty(
-    '--size',
-    size.toString(),
-  );
-
   // render the board
-  return <Board>{smallBoards}</Board>;
+  return <Board size={size} tiles={tiles} />;
 }
