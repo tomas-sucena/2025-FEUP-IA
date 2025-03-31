@@ -39,9 +39,18 @@ export class GameAI {
 
   /**
    * Initializes the computer player.
+   * @param chooseMove a function for choosing the move to play
    */
-  constructor() {
-    this.chooseMove = this.randomMove;
+  private constructor(chooseMove: (state: GameState) => GameMove) {
+    this.chooseMove = chooseMove;
+  }
+
+  /**
+   * Creates an easy computer player.
+   * @returns an easy computer player
+   */
+  static easy() {
+    return new GameAI(this.randomMove);
   }
 
   /**
@@ -49,17 +58,17 @@ export class GameAI {
    * @param state the game state
    * @returns a random valid move
    */
-  randomMove(state: GameState): GameMove {
+  static randomMove(state: GameState): GameMove {
     const validMoves = state.getValidMoves();
     return validMoves[Math.floor(Math.random() * validMoves.length)];
   }
 
-  getMoveValue(state: GameState, move: GameMove) {
+  static getMoveValue(state: GameState, move: GameMove) {
     // TODO
     return 0;
   }
 
-  minimaxDFS(
+  static minimaxDFS(
     node: Node,
     depth: number,
     alpha: number,
@@ -108,7 +117,7 @@ export class GameAI {
     return bestNode;
   }
 
-  minimax(state: GameState, depth: number): GameMove {
+  static minimax(state: GameState, depth: number): GameMove {
     return this.minimaxDFS(new Node(state), depth, -Infinity, Infinity, true)
       .move;
   }

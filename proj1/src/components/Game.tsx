@@ -1,11 +1,31 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GameState } from '../game/state';
+import { GameAI } from '../game/AI';
 
 // components
 import Board from './Board';
-import Tile from './Tile';
 
-export default function Game({ size }: { size: number }) {
+interface GameProps {
+  /** the number of rows and columns of the board */
+  size: number;
+  /** the first player */
+  player1?: GameAI;
+  /** the second player */
+  player2?: GameAI;
+}
+
+// a function for the computer players to play
+const play = (player: GameAI, state: GameState) => {
+  const move = player.chooseMove(state);
+
+  // click the corresponding tile
+  const tile = document
+    .getElementsByClassName('small-board')[move.boardIndex]
+    .children[move.tileIndex] as HTMLButtonElement;
+  tile.click();
+};
+
+export default function Game({ size, player1, player2 }: GameProps) {
   // initialize the game state
   const [state, setState] = useState(GameState.fromSize(size));
 
@@ -15,6 +35,14 @@ export default function Game({ size }: { size: number }) {
       setState(GameState.fromState(state));
     }
   };
+
+  // handle computer player turns
+  useEffect(() => {
+    const player = state.nextPlayer === 'X' ? player1 : player2;
+    if (player) {
+      play(player, state);
+    }
+  }, [state]);
 
   // render the board
   return <Board size={size} state={state} onTileClick={onTileClick} />;

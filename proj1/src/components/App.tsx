@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { GameAI } from '../game/AI';
 
 // components
 import Game from './Game';
@@ -22,7 +23,7 @@ export default function App() {
   return (
     <>
       <title>Ultimate Tic-Tac-Toe</title>
-      <main>{page === Page.Game && <Game size={3} />}</main>
+      <main>{page === Page.Game && <Game size={3} player2={GameAI.easy()} />}</main>
     </>
   );
 }
