@@ -5,8 +5,24 @@
   background-color: #171b21;
   border: medium solid #c4c6c9;
   border-radius: 20px;
+  padding: 2em;
+  gap: 1em;
 }
 
-#menu > img {
-    width: 20em;
+#menu-title {
+  width: 15em;
+}
+
+#menu-options {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  list-style: none;
+  gap: 1em;
+  font-size: 1em;
+}
+
+#menu > p {
+  margin-bottom: 0;
+  opacity: 0.5;
 }

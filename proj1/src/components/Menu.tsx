@@ -6,10 +6,18 @@ import './Menu.css';
 export default function Menu() {
   return (
     <form id="menu">
-      <img src={Logo} />
-      <button>New Game</button>
-      <button>Continue</button>
-      <button>Credits</button>
+      <img id="menu-title" src={Logo} alt="Ultimate Tic-Tac-Toe" />
+      <ul id="menu-options">
+        <li>
+          <button>New Game</button>
+        </li>
+        <li>
+          <button>Continue</button>
+        </li>
+        <li>
+          <button>Credits</button>
+        </li>
+      </ul>
       <p>Press any menu item to select</p>
     </form>
   );
