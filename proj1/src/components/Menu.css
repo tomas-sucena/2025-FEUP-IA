@@ -1,0 +1,12 @@
+#menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #171b21;
+  border: medium solid #c4c6c9;
+  border-radius: 20px;
+}
+
+#menu > img {
+    width: 20em;
+}

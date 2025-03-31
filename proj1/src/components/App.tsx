@@ -3,6 +3,7 @@ import { GameAI } from '../game/AI';
 
 // components
 import Game from './Game';
+import Menu from './Menu';
 
 // styling
 import './App.css';
@@ -14,7 +15,7 @@ enum Page {
 }
 
 export default function App() {
-  const [page, setPage] = useState(Page.Game);
+  const [page, setPage] = useState(Page.Menu);
 
   // a function for going back to the menu
   // const goToMenu = () => setPage(Page.Menu);
@@ -24,6 +25,7 @@ export default function App() {
     <>
       <title>Ultimate Tic-Tac-Toe</title>
       <main>
+        {page === Page.Menu && <Menu />}
         {page === Page.Game && <Game size={3} player2={GameAI.easy()} />}
       </main>
     </>
