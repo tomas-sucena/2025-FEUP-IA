@@ -23,7 +23,9 @@ export default function App() {
   return (
     <>
       <title>Ultimate Tic-Tac-Toe</title>
-      <main>{page === Page.Game && <Game size={3} player2={GameAI.easy()} />}</main>
+      <main>
+        {page === Page.Game && <Game size={3} player2={GameAI.easy()} />}
+      </main>
     </>
   );
 }
