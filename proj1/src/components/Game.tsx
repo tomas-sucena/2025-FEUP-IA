@@ -19,8 +19,7 @@ const play = (player: GameAI, state: GameState) => {
   const move = player.chooseMove(state);
 
   // click the corresponding tile
-  const tile = document
-    .getElementsByClassName('small-board')[move.boardIndex]
+  const tile = document.getElementsByClassName('small-board')[move.boardIndex]
     .children[move.tileIndex] as HTMLButtonElement;
   tile.click();
 };
@@ -42,7 +41,7 @@ export default function Game({ size, player1, player2 }: GameProps) {
     if (player) {
       play(player, state);
     }
-  }, [state]);
+  });
 
   // render the board
   return <Board size={size} state={state} onTileClick={onTileClick} />;

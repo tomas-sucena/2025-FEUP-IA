@@ -1,6 +1,6 @@
 import { GameState, GameMove } from './state';
 
-export default {
+const heuristics = {
   /**
    * Determines if the player has won the game.
    * @param state the game state
@@ -27,7 +27,7 @@ export default {
    */
   middleOfSmallBoard: (state: GameState, move: GameMove): boolean => {
     const area = state.board.length;
-    return area % 2 == 1 && move.tileIndex === area / 2;
+    return area % 2 === 1 && move.tileIndex === area / 2;
   },
   /**
    * Determines if the player occupied a corner of the small board they played on.
@@ -50,7 +50,7 @@ export default {
    */
   middleOfBoard: (state: GameState, move: GameMove): boolean => {
     const area = state.board.length;
-    return area % 2 == 1 && move.boardIndex === area / 2;
+    return area % 2 === 1 && move.boardIndex === area / 2;
   },
   /**
    * Determines if the player made a move in a corner small board.
@@ -86,3 +86,5 @@ export default {
     );
   },
 };
+
+export default heuristics;
