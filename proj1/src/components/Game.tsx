@@ -16,20 +16,6 @@ export default function Game({ size }: { size: number }) {
     }
   };
 
-  // render the board tiles
-  const tiles = state.smallBoards.map((smallBoard, smallBoardIndex) =>
-    smallBoard.map((tile, tileIndex) => (
-      <Tile
-        key={tileIndex}
-        symbol={tile}
-        highlight={
-          state.nextBoardIndex < 0 || state.nextBoardIndex === smallBoardIndex
-        }
-        onClick={onTileClick.bind(null, smallBoardIndex, tileIndex)}
-      />
-    )),
-  );
-
   // render the board
-  return <Board size={size} tiles={tiles} />;
+  return <Board size={size} state={state} onTileClick={onTileClick} />;
 }
