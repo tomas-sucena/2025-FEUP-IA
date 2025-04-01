@@ -1,4 +1,5 @@
 import { GameState, GameMove } from './state';
+import { heuristics } from './heuristics';
 
 class Node {
   state: GameState;
@@ -35,22 +36,36 @@ class Node {
  * The computer player.
  */
 export class GameAI {
-  chooseMove: (state: GameState) => GameMove;
+  chooseMove?: (state: GameState) => GameMove;
 
   /**
    * Initializes the computer player.
    * @param chooseMove a function for choosing the move to play
    */
-  private constructor(chooseMove: (state: GameState) => GameMove) {
-    this.chooseMove = chooseMove;
-  }
+  /* private constructor() {
+    this.chooseMove = () => {};
+  }*/
 
   /**
    * Creates an easy computer player.
    * @returns an easy computer player
    */
   static easy() {
-    return new GameAI(this.randomMove);
+    const AI = new GameAI();
+    AI.chooseMove = AI.randomMove;
+
+    return AI;
+  }
+
+  /**
+   * Creates an easy computer player.
+   * @returns an easy computer player
+   */
+  static medium() {
+    const AI = new GameAI();
+    AI.chooseMove = (state) => AI.minimax(state, 2);
+
+    return AI;
   }
 
   /**
@@ -58,17 +73,19 @@ export class GameAI {
    * @param state the game state
    * @returns a random valid move
    */
-  static randomMove(state: GameState): GameMove {
+  randomMove(state: GameState): GameMove {
     const validMoves = state.getValidMoves();
     return validMoves[Math.floor(Math.random() * validMoves.length)];
   }
 
-  static getMoveValue(state: GameState, move: GameMove) {
-    // TODO
-    return 0;
+  getMoveValue(state: GameState, move: GameMove) {
+    return Object.values(heuristics).reduce(
+      (value, heuristic) => value + heuristic(state, move),
+      0,
+    );
   }
 
-  static minimaxDFS(
+  private minimaxDFS(
     node: Node,
     depth: number,
     alpha: number,
@@ -117,7 +134,7 @@ export class GameAI {
     return bestNode;
   }
 
-  static minimax(state: GameState, depth: number): GameMove {
+  minimax(state: GameState, depth: number): GameMove {
     return this.minimaxDFS(new Node(state), depth, -Infinity, Infinity, true)
       .move;
   }

@@ -143,21 +143,23 @@ export class GameState {
    */
   getValidMoves(): GameMove[] {
     // a function for determining the valid moves within a small board
-    const getValidTiles = (boardIndex: number) =>
-      this.smallBoards[boardIndex].reduce(
-        (validMoves: GameMove[], symbol, tileIndex) => {
-          if (symbol === '') {
-            validMoves.push(new GameMove(boardIndex, tileIndex));
-          }
+    const getValidTiles = (smallBoard: string[], boardIndex: number) =>
+      smallBoard.reduce((validMoves: GameMove[], symbol, tileIndex) => {
+        if (symbol === '') {
+          validMoves.push(new GameMove(boardIndex, tileIndex, this.nextPlayer));
+        }
 
-          return validMoves;
-        },
-        [],
-      );
+        return validMoves;
+      }, []);
 
     return this.nextBoardIndex < 0
-      ? this.smallBoards.flatMap((_, boardIndex) => getValidTiles(boardIndex)) // all small boards are available
-      : getValidTiles(this.nextBoardIndex); // only a specific small board is available
+      ? this.smallBoards.flatMap((smallBoard, boardIndex) =>
+          getValidTiles(smallBoard, boardIndex),
+        ) // all small boards are available
+      : getValidTiles(
+          this.smallBoards[this.nextBoardIndex],
+          this.nextBoardIndex,
+        ); // only a specific small board is available
   }
 
   /**

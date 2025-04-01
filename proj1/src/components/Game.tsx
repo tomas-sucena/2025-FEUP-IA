@@ -16,17 +16,17 @@ interface GameProps {
 
 // a function for the computer players to play
 const play = (player: GameAI, state: GameState) => {
-  const now = Date.now();
+  const start = Date.now();
 
   // compute the move
-  const move = player.chooseMove(state);
+  const move = player.chooseMove!(state);
 
   // find the corresponding tile
   const tile = document.getElementsByClassName('small-board')[move.boardIndex]
     .children[move.tileIndex] as HTMLButtonElement;
 
   // click the tile
-  setTimeout(() => tile.click(), Math.max(1000 - now + Date.now(), 0));
+  setTimeout(() => tile.click(), Math.max(1000 - Date.now() + start, 0));
 };
 
 export default function Game({ size, player1, player2 }: GameProps) {

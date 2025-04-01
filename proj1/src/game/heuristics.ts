@@ -1,14 +1,21 @@
 import { GameState, GameMove } from './state';
 
-const heuristics = {
+enum Weight {
+  Max = 1000,
+  A_lot = 500,
+  Average = 50,
+  A_little = 10,
+}
+
+export const heuristics = {
   /**
    * Determines if the player has won the game.
    * @param state the game state
    * @param move the move
    * @returns true if the player has won the game, false otherwise
    */
-  win: (state: GameState, move: GameMove): boolean => {
-    return state.checkWinner(state.board, move.player);
+  win: (state: GameState, move: GameMove): number => {
+    return Weight.Max * +state.checkWinner(state.board, move.player);
   },
   /**
    * Determines if the player has won the small board they played on.
@@ -16,54 +23,41 @@ const heuristics = {
    * @param move the move
    * @returns true if the player has won the small board they played on, false otherwise
    */
-  smallBoardWin: (state: GameState, move: GameMove): boolean => {
-    return state.board[move.boardIndex] === move.player;
+  smallBoardWin: (state: GameState, move: GameMove): number => {
+    return Weight.A_lot * +(state.board[move.boardIndex] === move.player);
   },
   /**
-   * Determines if the player occupied the middle of the small board they played on.
+   * Determines if the opponent can win a small board in the next turn.
    * @param state the game state
    * @param move the move
-   * @returns true if the player occupied the middle of the small board, false otherwise
+   * @returns true if the opponent can win a small board in the next turn, false otherwise
    */
-  middleOfSmallBoard: (state: GameState, move: GameMove): boolean => {
-    const area = state.board.length;
-    return area % 2 === 1 && move.tileIndex === area / 2;
-  },
-  /**
-   * Determines if the player occupied a corner of the small board they played on.
-   * @param state the game state
-   * @param move the move
-   * @returns true if the player occupied a corner of the small board, false otherwise
-   */
-  cornerOfSmallBoard: (state: GameState, move: GameMove): boolean => {
-    const area = state.board.length,
-      size = Math.sqrt(area);
-    const corners = [0, size - 1, area - size, area - 1];
+  smallBoardLoss: (state: GameState, _: GameMove): number => {
+    // a function that determines if the player can win the small board
+    const canWinSmallBoard = (smallBoard: string[], boardIndex: number) => {
+      return (
+        state.board[boardIndex] === '' &&
+        state.victoryPatterns.some(
+          (pattern) =>
+            pattern.reduce(
+              (acc, index) => acc + +(smallBoard[index] === state.nextPlayer),
+              0,
+            ) === 2,
+        )
+      );
+    };
 
-    return corners.some((index) => move.tileIndex === index);
-  },
-  /**
-   * Determines if the player made a move in the middle small board.
-   * @param state the game state
-   * @param move the move
-   * @returns true if the player made a move in the middle small board, false otherwise
-   */
-  middleOfBoard: (state: GameState, move: GameMove): boolean => {
-    const area = state.board.length;
-    return area % 2 === 1 && move.boardIndex === area / 2;
-  },
-  /**
-   * Determines if the player made a move in a corner small board.
-   * @param state the game state
-   * @param move the move
-   * @returns true if the player made a move in a corner small board, false otherwise
-   */
-  cornerOfBoard: (state: GameState, move: GameMove): boolean => {
-    const area = state.board.length,
-      size = Math.sqrt(area);
-    const corners = [0, size - 1, area - size, area - 1];
-
-    return corners.some((index) => move.boardIndex === index);
+    return (
+      -Weight.A_lot *
+      +(state.nextBoardIndex < 0
+        ? state.smallBoards.map((smallBoard, boardIndex) =>
+            canWinSmallBoard(smallBoard, boardIndex),
+          ) // all small boards are available
+        : canWinSmallBoard(
+            state.smallBoards[state.nextBoardIndex],
+            state.nextBoardIndex,
+          )) // only a specific small board is available
+    );
   },
   /**
    * Counts the number of non-blocked victory patterns that contain the move.
@@ -75,16 +69,17 @@ const heuristics = {
     const smallBoard = state.smallBoards[move.boardIndex];
     const opponent = state.nextPlayer;
 
-    return state.victoryPatterns.reduce(
-      (acc, pattern) =>
-        acc +
-        +(
-          pattern.includes(move.tileIndex) &&
-          pattern.every((index) => smallBoard[index] !== opponent)
-        ),
-      0,
+    return (
+      Weight.A_little *
+      state.victoryPatterns.reduce(
+        (acc, pattern) =>
+          acc +
+          +(
+            pattern.includes(move.tileIndex) &&
+            pattern.every((index) => smallBoard[index] !== opponent)
+          ),
+        0,
+      )
     );
   },
 };
-
-export default heuristics;
