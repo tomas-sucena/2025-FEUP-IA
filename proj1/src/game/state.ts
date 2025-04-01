@@ -117,7 +117,7 @@ export class GameState {
     // diagonals
     victoryPatterns.push(Array.from({ length: size }, (_, i) => i * size + i));
     victoryPatterns.push(
-      Array.from({ length: size }, (_, i) => area - (i * size + i + 1)),
+      Array.from({ length: size }, (_, i) => size * ++i - i),
     );
 
     return victoryPatterns;
