@@ -2,11 +2,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #bdbdbd;
-  height: 2em;
-  width: 2em;
   margin: 4px;
   border-radius: 5%;
+  background-color: #bdbdbd;
+  width: 2em;
+  height: 2em;
 }
 
 .tile:hover {
@@ -14,8 +14,8 @@
 }
 
 .tile[data-disabled] {
-  cursor: not-allowed;
   opacity: 0.65;
+  cursor: not-allowed;
 }
 
 .tile[data-symbol='X'] {

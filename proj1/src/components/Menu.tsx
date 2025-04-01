@@ -18,7 +18,7 @@ export default function Menu() {
           <button>Credits</button>
         </li>
       </ul>
-      <p>Press any menu item to select</p>
+      <small>Press any menu item to select</small>
     </form>
   );
 }
