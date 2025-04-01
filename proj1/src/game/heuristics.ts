@@ -59,6 +59,9 @@ export const heuristics = {
           )) // only a specific small board is available
     );
   },
+  avoidFreeMove: (state: GameState, _: GameMove): number => {
+    return -Weight.Average * +(state.nextBoardIndex < 0);
+  },
   /**
    * Counts the number of non-blocked victory patterns that contain the move.
    * @param state the game state
@@ -67,7 +70,6 @@ export const heuristics = {
    */
   countNonBlockedPatterns: (state: GameState, move: GameMove): number => {
     const smallBoard = state.smallBoards[move.boardIndex];
-    const opponent = state.nextPlayer;
 
     return (
       Weight.A_little *
@@ -76,7 +78,7 @@ export const heuristics = {
           acc +
           +(
             pattern.includes(move.tileIndex) &&
-            pattern.every((index) => smallBoard[index] !== opponent)
+            pattern.every((index) => smallBoard[index] !== state.nextPlayer)
           ),
         0,
       )
