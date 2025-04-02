@@ -33,30 +33,17 @@ export const heuristics = {
    * @returns true if the opponent can win a small board in the next turn, false otherwise
    */
   smallBoardLoss: (state: GameState, _: GameMove): number => {
-    // a function that determines if the player can win the small board
-    const canWinSmallBoard = (smallBoard: string[], boardIndex: number) => {
-      return (
-        state.board[boardIndex] === '' &&
-        state.victoryPatterns.some(
-          (pattern) =>
-            pattern.reduce(
-              (acc, index) => acc + +(smallBoard[index] === state.nextPlayer),
-              0,
-            ) === 2,
-        )
-      );
-    };
-
     return (
       -Weight.A_lot *
-      +(state.nextBoardIndex < 0
-        ? state.smallBoards.map((smallBoard, boardIndex) =>
-            canWinSmallBoard(smallBoard, boardIndex),
-          ) // all small boards are available
-        : canWinSmallBoard(
-            state.smallBoards[state.nextBoardIndex],
-            state.nextBoardIndex,
-          )) // only a specific small board is available
+      +state.getValidMoves().some((move) => {
+        const nextState = GameState.fromState(state);
+        nextState.makeMove(move.boardIndex, move.tileIndex);
+
+        return state.board.some(
+          (winner, smallBoardIndex) =>
+            winner !== nextState.board[smallBoardIndex],
+        );
+      })
     );
   },
   avoidFreeMove: (state: GameState, _: GameMove): number => {
