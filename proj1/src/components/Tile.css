@@ -15,7 +15,7 @@
 
 .tile[data-disabled] {
   cursor: not-allowed;
-  opacity: 0.65;
+  opacity: 0.60;
 }
 
 .tile[data-symbol='X'] {

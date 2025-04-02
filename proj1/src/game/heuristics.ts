@@ -18,6 +18,20 @@ export const heuristics = {
     return Weight.Max * +state.checkWinner(state.board, move.player);
   },
   /**
+   * Determines if the opponent can win the game in the next turn.
+   * @param state the game state
+   * @param move the move
+   * @returns true if the opponent can win the game in the next turn, false otherwise
+   */
+  loss: (state: GameState, _: GameMove): number => {
+    return -Weight.Max * +(state.getValidMoves().some((move) => {
+      const nextState = GameState.fromState(state);
+      nextState.makeMove(move.boardIndex, move.tileIndex);
+
+      return nextState.checkWinner(nextState.board, state.nextPlayer);
+    }));
+  },
+  /**
    * Determines if the player has won the small board they played on.
    * @param state the game state
    * @param move the move
