@@ -63,7 +63,7 @@ export class GameAI {
    */
   static medium() {
     const AI = new GameAI();
-    AI.chooseMove = (state) => AI.minimax(state, 2);
+    AI.chooseMove = (state) => AI.minimax(state, 1);
 
     return AI;
   }
@@ -79,6 +79,9 @@ export class GameAI {
   }
 
   getMoveValue(state: GameState, move: GameMove) {
+    // apply the move
+    state.makeMove(move.boardIndex, move.tileIndex);
+
     return Object.values(heuristics).reduce(
       (value, heuristic) => value + heuristic(state, move),
       0,
