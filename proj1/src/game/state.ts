@@ -45,14 +45,14 @@ export class GameState {
    * Initializes the game state.
    */
   private constructor({
-    board: boards,
-    smallBoards: tiles,
+    board,
+    smallBoards,
     nextPlayer,
     nextBoardIndex,
     victoryPatterns,
   }: IGameState) {
-    this.board = boards;
-    this.smallBoards = tiles;
+    this.board = board;
+    this.smallBoards = smallBoards;
     this.nextPlayer = nextPlayer;
     this.nextBoardIndex = nextBoardIndex;
     this.victoryPatterns = victoryPatterns;

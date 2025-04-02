@@ -49,5 +49,10 @@ export default function Game({ size, player1, player2 }: GameProps) {
   });
 
   // render the board
-  return <Board size={size} state={state} onTileClick={onTileClick} />;
+  return (
+    <>
+      <Board size={size} state={state} onTileClick={onTileClick} />
+      <aside>It's {state.nextPlayer}'s turn!</aside>
+    </>
+  );
 }
