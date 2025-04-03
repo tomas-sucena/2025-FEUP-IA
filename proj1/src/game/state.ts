@@ -20,10 +20,14 @@ interface IGameState {
   board: string[];
   /** A 2D array that represents the small boards. */
   smallBoards: string[][];
+  /** The symbol of the player that has won the game. */
+  winner: string;
   /** The symbol of the player that will play next. */
   nextPlayer: string;
   /* The index of the small board the next player has to play in. */
   nextBoardIndex: number;
+  /** An array containing all the valid moves. */
+  validMoves: GameMove[];
   /** An array containing all possible tile combinations that lead to victory. */
   victoryPatterns: number[][];
 }
@@ -38,10 +42,14 @@ export class GameState {
   board: string[];
   /** A 2D array that represents the small boards. */
   smallBoards: string[][];
+  /** The symbol of the player that has won the game. */
+  winner: string;
   /** The symbol of the player that will play next. */
   nextPlayer: string;
   /** The index of the small board the next player has to play in. */
   nextBoardIndex: number;
+  /** An array containing all the valid moves. */
+  validMoves: GameMove[];
   /** An array containing all possible tile combinations that lead to victory. */
   readonly victoryPatterns: number[][];
 
@@ -52,15 +60,19 @@ export class GameState {
     size,
     board,
     smallBoards,
+    winner,
     nextPlayer,
     nextBoardIndex,
+    validMoves,
     victoryPatterns,
   }: IGameState) {
     this.size = size;
     this.board = board;
     this.smallBoards = smallBoards;
+    this.winner = winner;
     this.nextPlayer = nextPlayer;
     this.nextBoardIndex = nextBoardIndex;
+    this.validMoves = validMoves;
     this.victoryPatterns = victoryPatterns;
   }
 
@@ -77,8 +89,10 @@ export class GameState {
       size: size,
       board: new Array(area).fill(''),
       smallBoards: Array.from({ length: area }, () => new Array(area).fill('')),
+      winner: '',
       nextPlayer: 'X',
       nextBoardIndex: -1,
+      validMoves: [],
       victoryPatterns: GameState.getVictoryPatterns(size),
     });
   }
@@ -94,8 +108,10 @@ export class GameState {
       size: state.size,
       board: [...state.board],
       smallBoards: state.smallBoards.map((smallBoard) => [...smallBoard]),
+      winner: state.winner,
       nextPlayer: state.nextPlayer,
       nextBoardIndex: state.nextBoardIndex,
+      validMoves: state.validMoves,
       victoryPatterns: state.victoryPatterns,
     });
 
@@ -124,16 +140,12 @@ export class GameState {
 
     // columns
     for (let j = 0; j < size; ++j) {
-      victoryPatterns.push(
-        Array.from({ length: size }, (_, i) => i * size + j),
-      );
+      victoryPatterns.push(Array.from({ length: size }, (_, i) => i * size + j));
     }
 
     // diagonals
     victoryPatterns.push(Array.from({ length: size }, (_, i) => i * size + i));
-    victoryPatterns.push(
-      Array.from({ length: size }, (_, i) => size * ++i - i),
-    );
+    victoryPatterns.push(Array.from({ length: size }, (_, i) => size * ++i - i));
 
     return victoryPatterns;
   }
@@ -144,7 +156,7 @@ export class GameState {
    * @param tileIndex the index of the tile
    * @returns true if the move is valid, false otherwise
    */
-  isValidMove(boardIndex: number, tileIndex: number): boolean {
+  private isValidMove(boardIndex: number, tileIndex: number): boolean {
     return (
       this.board[boardIndex] === '' &&
       (this.nextBoardIndex < 0 || this.nextBoardIndex === boardIndex) &&
@@ -156,25 +168,24 @@ export class GameState {
    * Computes the valid moves for the current turn.
    * @returns the valid moves for the current turn
    */
-  getValidMoves(): GameMove[] {
+  private getValidMoves(): GameMove[] {
     // a function for determining the valid moves within a small board
-    const getValidTiles = (smallBoard: string[], boardIndex: number) =>
-      smallBoard.reduce((validMoves: GameMove[], symbol, tileIndex) => {
+    const getValidTiles = (smallBoardIndex: number) =>
+      this.smallBoards[smallBoardIndex].reduce((validMoves: GameMove[], symbol, tileIndex) => {
         if (symbol === '') {
-          validMoves.push(new GameMove(boardIndex, tileIndex, this.nextPlayer));
+          validMoves.push(new GameMove(smallBoardIndex, tileIndex, this.nextPlayer));
         }
 
         return validMoves;
       }, []);
 
     return this.nextBoardIndex < 0
-      ? this.smallBoards.flatMap((smallBoard, boardIndex) =>
-          getValidTiles(smallBoard, boardIndex),
-        ) // all small boards are available
-      : getValidTiles(
-          this.smallBoards[this.nextBoardIndex],
-          this.nextBoardIndex,
-        ); // only a specific small board is available
+      ? // all small boards without a winner are available
+        this.smallBoards
+          .filter((_, smallBoardIndex) => this.board[smallBoardIndex] === '')
+          .flatMap((_, smallBoardIndex) => getValidTiles(smallBoardIndex))
+      : // only a specific small board is available
+        getValidTiles(this.nextBoardIndex);
   }
 
   /**
@@ -183,10 +194,8 @@ export class GameState {
    * @param player the symbol of the player
    * @returns true if the player has won the board, false otherwise
    */
-  checkWinner(board: string[], player: string) {
-    return this.victoryPatterns.some((pattern) =>
-      pattern.every((i) => board[i] === player),
-    );
+  private checkWinner(board: string[], player: string) {
+    return this.victoryPatterns.some((pattern) => pattern.every((i) => board[i] === player));
   }
 
   /**
@@ -209,11 +218,20 @@ export class GameState {
       this.board[smallBoardIndex] = this.nextPlayer;
     }
 
-    // toggle the player
-    this.nextPlayer = this.nextPlayer === 'X' ? 'O' : 'X';
+    // verify if the player has won the game
+    if (this.checkWinner(this.board, this.nextPlayer)) {
+      this.winner = this.nextPlayer;
+      this.validMoves = [];
+    } else {
+      // toggle the player
+      this.nextPlayer = this.nextPlayer === 'X' ? 'O' : 'X';
 
-    // switch the board
-    this.nextBoardIndex = this.board[tileIndex] ? -1 : tileIndex;
+      // switch the board
+      this.nextBoardIndex = this.board[tileIndex] ? -1 : tileIndex;
+
+      // compute the next valid moves
+      this.validMoves = this.getValidMoves();
+    }
 
     return true;
   }
