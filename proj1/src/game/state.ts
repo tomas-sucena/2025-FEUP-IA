@@ -92,7 +92,9 @@ export class GameState {
       winner: '',
       nextPlayer: 'X',
       nextBoardIndex: -1,
-      validMoves: [],
+      validMoves: Array.from({ length: area }).flatMap((_, boardIndex) =>
+        Array.from({ length: area }, (_, tileIndex) => new GameMove(boardIndex, tileIndex)),
+      ),
       victoryPatterns: GameState.getVictoryPatterns(size),
     });
   }

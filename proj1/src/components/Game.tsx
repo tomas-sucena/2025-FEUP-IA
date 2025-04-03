@@ -19,11 +19,14 @@ const play = (player: GameAI, state: GameState) => {
   const start = Date.now();
 
   // compute the move
+  console.log(player.chooseMove);
   const move = player.chooseMove!(state);
+  console.log(move);
 
   // find the corresponding tile
-  const tile = document.getElementsByClassName('small-board')[move.boardIndex]
-    .children[move.tileIndex] as HTMLButtonElement;
+  const tile = document.getElementsByClassName('small-board')[move.boardIndex].children[
+    move.tileIndex
+  ] as HTMLButtonElement;
 
   // click the tile
   setTimeout(() => tile.click(), Math.max(1000 - Date.now() + start, 0));

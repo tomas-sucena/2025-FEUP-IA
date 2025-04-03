@@ -3,20 +3,17 @@ import { heuristics } from './heuristics';
 
 class Node {
   state: GameState;
-  move?: GameMove;
+  move: GameMove;
   value: number;
 
   constructor(state: GameState, move?: GameMove) {
     this.state = GameState.fromState(state);
-    this.move = move;
+    this.move = move ?? new GameMove(-1, -1);
     this.value = 0;
-  }
 
-  getChild(move: GameMove) {
-    const child = new Node(this.state, move);
-    child.state.makeMove(move.boardIndex, move.tileIndex);
-
-    return child;
+    if (move) {
+      this.state.makeMove(move.boardIndex, move.tileIndex);
+    }
   }
 
   isTerminal(): boolean {
@@ -55,7 +52,7 @@ export class GameAI {
    */
   static medium() {
     const AI = new GameAI();
-    AI.chooseMove = (state) => AI.minimax(state, 3);
+    AI.chooseMove = (state) => AI.minimax(state, 1);
 
     return AI;
   }
@@ -71,9 +68,6 @@ export class GameAI {
   }
 
   private getMoveValue(state: GameState, move: GameMove) {
-    // apply the move
-    state.makeMove(move.boardIndex, move.tileIndex);
-
     return Object.values(heuristics).reduce(
       (value, heuristic) => value + heuristic(state, move),
       0,
@@ -89,50 +83,53 @@ export class GameAI {
   ): Node {
     // verify if the depth limit has been reached or the node is terminal
     if (depth === 0 || node.isTerminal()) {
-      node.value = this.getMoveValue(node.state, node.move!);
-      console.log(node);
+      node.value = this.getMoveValue(node.state, node.move);
       return node;
     }
 
-    console.log(`depth: ${depth}`);
-
     // define the algorithm variables
     let bestNode = new Node(node.state);
-    let isBetterMove: (newValue: number, bestValue: number) => boolean;
-    let prune: (node: Node) => boolean;
+    let isBetterMove: (newValue: number) => boolean;
+    let prune: () => boolean;
 
     if (maximize) {
       bestNode.value = -Infinity;
-      isBetterMove = (newValue: number, bestValue: number) => {
-        return newValue > bestValue;
+      isBetterMove = (newValue: number) => {
+        return newValue > bestNode.value;
       };
-      prune = (node: Node) => {
-        alpha = Math.max(node.value, alpha);
-        return node.value >= beta;
+      prune = () => {
+        alpha = Math.max(bestNode.value, alpha);
+        return bestNode.value >= beta;
       };
     } else {
       bestNode.value = Infinity;
-      isBetterMove = (newValue: number, bestValue: number) => {
-        return newValue < bestValue;
+      isBetterMove = (newValue: number) => {
+        return newValue < bestNode.value;
       };
-      prune = (node: Node) => {
-        beta = Math.min(node.value, beta);
-        return node.value <= alpha;
+      prune = () => {
+        beta = Math.min(bestNode.value, beta);
+        return bestNode.value <= alpha;
       };
     }
 
     // compute the best child node
     for (const move of node.state.validMoves) {
-      const { value } = this.minimaxDFS(node.getChild(move), depth - 1, alpha, beta, !maximize);
+      const { value } = this.minimaxDFS(
+        new Node(node.state, move),
+        depth - 1,
+        alpha,
+        beta,
+        !maximize,
+      );
 
       // verify if a better move has been found
-      if (isBetterMove(value, bestNode.value)) {
+      if (isBetterMove(value)) {
         bestNode.move = move;
         bestNode.value = value;
       }
 
       // verify if we can prune the remaining child nodes
-      if (prune(bestNode)) {
+      if (prune()) {
         break;
       }
     }
@@ -141,8 +138,6 @@ export class GameAI {
   }
 
   minimax(state: GameState, depth: number): GameMove {
-    const move = this.minimaxDFS(new Node(state), depth, -Infinity, Infinity, true).move!;
-    console.log(move);
-    return move;
+    return this.minimaxDFS(new Node(state), depth, -Infinity, Infinity, true).move;
   }
 }
