@@ -4,12 +4,10 @@
 export class GameMove {
   boardIndex: number;
   tileIndex: number;
-  player: string;
 
-  constructor(boardIndex: number, tileIndex: number, player?: string) {
+  constructor(boardIndex: number, tileIndex: number) {
     this.boardIndex = boardIndex;
     this.tileIndex = tileIndex;
-    this.player = player ?? '';
   }
 }
 
@@ -175,7 +173,7 @@ export class GameState {
     const getValidTiles = (smallBoardIndex: number) =>
       this.smallBoards[smallBoardIndex].reduce((validMoves: GameMove[], symbol, tileIndex) => {
         if (symbol === '') {
-          validMoves.push(new GameMove(smallBoardIndex, tileIndex, this.nextPlayer));
+          validMoves.push(new GameMove(smallBoardIndex, tileIndex));
         }
 
         return validMoves;

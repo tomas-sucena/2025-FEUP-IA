@@ -25,34 +25,39 @@ class Node {
  * The computer player.
  */
 export class GameAI {
+  player: string;
+  opponent: string;
   chooseMove?: (state: GameState) => GameMove;
 
   /**
    * Initializes the computer player.
-   * @param chooseMove a function for choosing the move to play
+   * @param player the AI's symbol
    */
-  /* private constructor() {
-    this.chooseMove = () => {};
-  }*/
+  private constructor(player: string) {
+    this.player = player;
+    this.opponent = player === 'X' ? 'O' : 'X';
+  }
 
   /**
    * Creates an easy computer player.
+   * @param player the AI's symbol
    * @returns an easy computer player
    */
-  static easy() {
-    const AI = new GameAI();
+  static easy(player: string) {
+    const AI = new GameAI(player);
     AI.chooseMove = AI.randomMove;
 
     return AI;
   }
 
   /**
-   * Creates an easy computer player.
-   * @returns an easy computer player
+   * Creates a medium computer player.
+   * @param player the AI's symbol
+   * @returns a medium computer player
    */
-  static medium() {
-    const AI = new GameAI();
-    AI.chooseMove = (state) => AI.minimax(state, 1);
+  static medium(player: string) {
+    const AI = new GameAI(player);
+    AI.chooseMove = (state) => AI.minimax(state, 2);
 
     return AI;
   }
@@ -67,9 +72,10 @@ export class GameAI {
     return validMoves[Math.floor(Math.random() * validMoves.length)];
   }
 
-  private getMoveValue(state: GameState, move: GameMove) {
+  private evaluateMove(state: GameState, move: GameMove) {
     return Object.values(heuristics).reduce(
-      (value, heuristic) => value + heuristic(state, move),
+      (value, heuristic) =>
+        value + heuristic({ state, move, player: this.player, opponent: this.opponent }),
       0,
     );
   }
@@ -83,9 +89,12 @@ export class GameAI {
   ): Node {
     // verify if the depth limit has been reached or the node is terminal
     if (depth === 0 || node.isTerminal()) {
-      node.value = this.getMoveValue(node.state, node.move);
+      node.value = this.evaluateMove(node.state, node.move);
+      console.log(node);
       return node;
     }
+
+    console.log(`depth: ${depth}`);
 
     // define the algorithm variables
     let bestNode = new Node(node.state);
@@ -99,7 +108,7 @@ export class GameAI {
       };
       prune = () => {
         alpha = Math.max(bestNode.value, alpha);
-        return bestNode.value >= beta;
+        return bestNode.value > beta;
       };
     } else {
       bestNode.value = Infinity;
@@ -108,7 +117,7 @@ export class GameAI {
       };
       prune = () => {
         beta = Math.min(bestNode.value, beta);
-        return bestNode.value <= alpha;
+        return bestNode.value < alpha;
       };
     }
 

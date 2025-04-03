@@ -8,15 +8,22 @@ enum Weight {
   Min = 10,
 }
 
+interface IHeuristic {
+  state: GameState;
+  move: GameMove;
+  player: string;
+  opponent: string;
+}
+
 export const heuristics = {
   /**
    * Determines if the player has won the game.
    * @param state the game state
-   * @param move the move
+   * @param player the player
    * @returns true if the player has won the game, false otherwise
    */
-  win: (state: GameState, move: GameMove): number => {
-    return Weight.Max * +(state.winner === move.player);
+  win: ({ state, player }: IHeuristic): number => {
+    return Weight.Max * +(state.winner === player);
   },
   /**
    * Determines if the opponent can win the game in the next turn.
@@ -24,13 +31,8 @@ export const heuristics = {
    * @param move the move
    * @returns true if the opponent can win the game in the next turn, false otherwise
    */
-  loss: (state: GameState, _: GameMove): number => {
-    return (
-      -Weight.Max *
-      +state.validMoves.some((move) => {
-        return GameState.fromState(state, move).winner === state.nextPlayer;
-      })
-    );
+  loss: ({ state, opponent }: IHeuristic): number => {
+    return -Weight.Max * +(state.winner === opponent);
   },
   /**
    * Determines if the player has won the small board they played on.
@@ -38,8 +40,8 @@ export const heuristics = {
    * @param move the move
    * @returns boolean indicating if the player has won the small board they played on
    */
-  smallBoardWin: (state: GameState, move: GameMove): number => {
-    return Weight.A_lot * +(state.board[move.boardIndex] === move.player);
+  smallBoardWin: ({ state, move, player }: IHeuristic): number => {
+    return Weight.A_lot * +(state.board[move.boardIndex] === player);
   },
   /**
    * Determines if the opponent can win a small board in the next turn.
@@ -47,24 +49,34 @@ export const heuristics = {
    * @param move the move
    * @returns boolean indicating if the opponent can win a small board in the next turn
    */
-  smallBoardLoss: (state: GameState, _: GameMove): number => {
-    return (
-      -Weight.A_lot *
-      +state.validMoves.some((move) => {
-        return GameState.fromState(state, move).board.some(
-          (winner, smallBoardIndex) => winner !== state.board[smallBoardIndex],
-        );
-      })
-    );
+  smallBoardLoss: ({ state, move, opponent }: IHeuristic): number => {
+    return Weight.A_lot * +(state.board[move.boardIndex] === opponent);
   },
   /**
    * Determines if the opponent will not be restricted to a small board in the next turn.
    * @param state the game state
-   * @param _ the move
    * @returns boolean indicating if the opponent will not be restricted to a small board in the next turn
    */
-  avoidFreeMove: (state: GameState, _: GameMove): number => {
+  /*avoidFreeMove: ({ state, player }: IHeuristic): number => {
     return -Weight.Average * +(state.nextBoardIndex < 0);
+  },*/
+  blockOpponentPatterns: ({ state, move, opponent }: IHeuristic) => {
+    const smallBoard = state.smallBoards[move.boardIndex];
+
+    // a function that counts the number of symbols in a pattern
+    const countSymbols = (pattern: number[], symbol: string) => {
+      return pattern.reduce((acc, index) => acc + +(smallBoard[index] === symbol), 0);
+    };
+
+    return (
+      Weight.Average *
+      state.victoryPatterns.reduce(
+        (acc, pattern) =>
+          acc +
+          +(pattern.includes(move.tileIndex) && countSymbols(pattern, opponent) === state.size - 1),
+        0,
+      )
+    );
   },
   /**
    * Determines if the current move blocks a diagonal occupied by the opponent.
@@ -72,7 +84,7 @@ export const heuristics = {
    * @param move the move
    * @returns boolean indicating if the current move blocks a diagonal occupied by the opponent
    */
-  blockOppositeCorner: (state: GameState, move: GameMove): number => {
+  blockOppositeCorner: ({ state, move, opponent }: IHeuristic): number => {
     const smallBoard = state.smallBoards[move.boardIndex];
 
     // compute the corners
@@ -87,9 +99,7 @@ export const heuristics = {
     // determine if the player occupied a corner
     const index = corners.indexOf(move.tileIndex);
 
-    return (
-      Weight.A_little * +(index >= 0 && smallBoard[oppositeCorners[index]] === state.nextPlayer)
-    );
+    return Weight.A_little * +(index >= 0 && smallBoard[oppositeCorners[index]] === opponent);
   },
   /**
    * Counts the number of non-blocked victory patterns that contain the move.
@@ -97,7 +107,7 @@ export const heuristics = {
    * @param move the move
    * @returns the number of victory patterns that contain the move
    */
-  countNonBlockedPatterns: (state: GameState, move: GameMove): number => {
+  countNonBlockedPatterns: ({ state, move, player }: IHeuristic): number => {
     const smallBoard = state.smallBoards[move.boardIndex];
 
     return (
@@ -107,7 +117,7 @@ export const heuristics = {
           acc +
           +(
             pattern.includes(move.tileIndex) &&
-            pattern.every((index) => smallBoard[index] !== state.nextPlayer)
+            pattern.every((index) => smallBoard[index] !== player)
           ),
         0,
       )
