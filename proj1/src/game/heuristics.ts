@@ -4,7 +4,8 @@ enum Weight {
   Max = 1000,
   A_lot = 500,
   Average = 50,
-  A_little = 10,
+  A_little = 30,
+  Min = 10,
 }
 
 export const heuristics = {
@@ -24,12 +25,15 @@ export const heuristics = {
    * @returns true if the opponent can win the game in the next turn, false otherwise
    */
   loss: (state: GameState, _: GameMove): number => {
-    return -Weight.Max * +(state.getValidMoves().some((move) => {
-      const nextState = GameState.fromState(state);
-      nextState.makeMove(move.boardIndex, move.tileIndex);
+    return (
+      -Weight.Max *
+      +state.getValidMoves().some((move) => {
+        const nextState = GameState.fromState(state);
+        nextState.makeMove(move.boardIndex, move.tileIndex);
 
-      return nextState.checkWinner(nextState.board, state.nextPlayer);
-    }));
+        return nextState.checkWinner(nextState.board, state.nextPlayer);
+      })
+    );
   },
   /**
    * Determines if the player has won the small board they played on.
@@ -64,6 +68,32 @@ export const heuristics = {
     return -Weight.Average * +(state.nextBoardIndex < 0);
   },
   /**
+   * Determines if the current move blocks a diagonal occupied by the opponent.
+   * @param state the game state
+   * @param move the move
+   * @returns true if the current move blocks a diagonal occupied by the opponent, false otherwise
+   */
+  blockOppositeCorner: (state: GameState, move: GameMove): number => {
+    const smallBoard = state.smallBoards[move.boardIndex];
+
+    // compute the corners
+    const corners = [
+      0, // top left
+      state.size - 1, // top right
+      smallBoard.length - state.size, // bottom left
+      smallBoard.length - 1, // bottom right
+    ];
+    const oppositeCorners = corners.toReversed();
+
+    // determine if the player occupied a corner
+    const index = corners.indexOf(move.tileIndex);
+
+    return (
+      Weight.A_little *
+      +(index >= 0 && smallBoard[oppositeCorners[index]] === state.nextPlayer)
+    );
+  },
+  /**
    * Counts the number of non-blocked victory patterns that contain the move.
    * @param state the game state
    * @param move the move
@@ -73,7 +103,7 @@ export const heuristics = {
     const smallBoard = state.smallBoards[move.boardIndex];
 
     return (
-      Weight.A_little *
+      Weight.Min *
       state.victoryPatterns.reduce(
         (acc, pattern) =>
           acc +

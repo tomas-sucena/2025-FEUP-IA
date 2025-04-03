@@ -14,6 +14,8 @@ export class GameMove {
 }
 
 interface IGameState {
+  /** the number of rows and columns of the board */
+  size: number;
   /** An array that represents the big board. */
   board: string[];
   /** A 2D array that represents the small boards. */
@@ -24,14 +26,14 @@ interface IGameState {
   nextBoardIndex: number;
   /** An array containing all possible tile combinations that lead to victory. */
   victoryPatterns: number[][];
-  /** Indicates if the object is a copy of another. */
-  isCopy: boolean;
 }
 
 /**
  * The game state.
  */
 export class GameState {
+  /** the number of rows and columns of the board */
+  size: number;
   /** An array that represents the big board. */
   board: string[];
   /** A 2D array that represents the small boards. */
@@ -42,26 +44,24 @@ export class GameState {
   nextBoardIndex: number;
   /** An array containing all possible tile combinations that lead to victory. */
   readonly victoryPatterns: number[][];
-  /** Indicates if the object is a copy of another. */
-  isCopy: boolean;
 
   /**
    * Initializes the game state.
    */
   private constructor({
+    size,
     board,
     smallBoards,
     nextPlayer,
     nextBoardIndex,
     victoryPatterns,
-    isCopy,
   }: IGameState) {
+    this.size = size;
     this.board = board;
     this.smallBoards = smallBoards;
     this.nextPlayer = nextPlayer;
     this.nextBoardIndex = nextBoardIndex;
     this.victoryPatterns = victoryPatterns;
-    this.isCopy = false;
   }
 
   /**
@@ -74,12 +74,12 @@ export class GameState {
 
     // initialize the game state
     return new GameState({
+      size: size,
       board: new Array(area).fill(''),
       smallBoards: Array.from({ length: area }, () => new Array(area).fill('')),
       nextPlayer: 'X',
       nextBoardIndex: -1,
       victoryPatterns: GameState.getVictoryPatterns(size),
-      isCopy: false,
     });
   }
 
@@ -91,12 +91,12 @@ export class GameState {
    */
   static fromState(state: GameState, move?: GameMove): GameState {
     const newState = new GameState({
-      board: state.board,
+      size: state.size,
+      board: [...state.board],
       smallBoards: state.smallBoards.map((smallBoard) => [...smallBoard]),
       nextPlayer: state.nextPlayer,
       nextBoardIndex: state.nextBoardIndex,
       victoryPatterns: state.victoryPatterns,
-      isCopy: true,
     });
 
     if (move) {
@@ -199,13 +199,6 @@ export class GameState {
     // verify if the move is valid
     if (!this.isValidMove(smallBoardIndex, tileIndex)) {
       return false;
-    }
-
-    if (this.isCopy) {
-      this.board = [...this.board];
-      this.smallBoards[smallBoardIndex] = [
-        ...this.smallBoards[smallBoardIndex],
-      ];
     }
 
     const smallBoard = this.smallBoards[smallBoardIndex];
