@@ -35,8 +35,8 @@ export default function Board({ size, state, onTileClick }: BoardProps) {
 
   return (
     <div id="board" style={style}>
-      {tiles.map((smallBoard) => (
-        <div className="small-board" style={style}>
+      {tiles.map((smallBoard, smallBoardIndex) => (
+        <div key={smallBoardIndex} className="small-board" style={style}>
           {smallBoard}
         </div>
       ))}

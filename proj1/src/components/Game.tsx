@@ -32,6 +32,7 @@ const play = (player: GameAI, state: GameState) => {
 export default function Game({ size, player1, player2 }: GameProps) {
   // initialize the game state
   const [state, setState] = useState(GameState.fromSize(size));
+  const player = state.nextPlayer === 'X' ? player1 : player2;
 
   // a function for handling tile clicks
   const onTileClick = (boardIndex: number, tileIndex: number) => {
@@ -42,9 +43,8 @@ export default function Game({ size, player1, player2 }: GameProps) {
 
   // handle computer player turns
   useEffect(() => {
-    const player = state.nextPlayer === 'X' ? player1 : player2;
     if (player) {
-      play(player, state);
+      setTimeout(() => play(player, state), 0);
     }
   });
 
