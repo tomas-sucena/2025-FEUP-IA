@@ -24,6 +24,8 @@ interface IGameState {
   nextBoardIndex: number;
   /** An array containing all possible tile combinations that lead to victory. */
   victoryPatterns: number[][];
+  /** Indicates if the object is a copy of another. */
+  isCopy: boolean;
 }
 
 /**
@@ -40,6 +42,8 @@ export class GameState {
   nextBoardIndex: number;
   /** An array containing all possible tile combinations that lead to victory. */
   readonly victoryPatterns: number[][];
+  /** Indicates if the object is a copy of another. */
+  isCopy: boolean;
 
   /**
    * Initializes the game state.
@@ -50,12 +54,14 @@ export class GameState {
     nextPlayer,
     nextBoardIndex,
     victoryPatterns,
+    isCopy,
   }: IGameState) {
     this.board = board;
     this.smallBoards = smallBoards;
     this.nextPlayer = nextPlayer;
     this.nextBoardIndex = nextBoardIndex;
     this.victoryPatterns = victoryPatterns;
+    this.isCopy = false;
   }
 
   /**
@@ -73,6 +79,7 @@ export class GameState {
       nextPlayer: 'X',
       nextBoardIndex: -1,
       victoryPatterns: GameState.getVictoryPatterns(size),
+      isCopy: false,
     });
   }
 
@@ -84,11 +91,12 @@ export class GameState {
    */
   static fromState(state: GameState, move?: GameMove): GameState {
     const newState = new GameState({
-      board: [...state.board],
+      board: state.board,
       smallBoards: state.smallBoards.map((smallBoard) => [...smallBoard]),
       nextPlayer: state.nextPlayer,
       nextBoardIndex: state.nextBoardIndex,
       victoryPatterns: state.victoryPatterns,
+      isCopy: true,
     });
 
     if (move) {
@@ -191,6 +199,13 @@ export class GameState {
     // verify if the move is valid
     if (!this.isValidMove(smallBoardIndex, tileIndex)) {
       return false;
+    }
+
+    if (this.isCopy) {
+      this.board = [...this.board];
+      this.smallBoards[smallBoardIndex] = [
+        ...this.smallBoards[smallBoardIndex],
+      ];
     }
 
     const smallBoard = this.smallBoards[smallBoardIndex];

@@ -63,7 +63,7 @@ export class GameAI {
    */
   static medium() {
     const AI = new GameAI();
-    AI.chooseMove = (state) => AI.minimax(state, 1);
+    AI.chooseMove = (state) => AI.minimax(state, 3);
 
     return AI;
   }
