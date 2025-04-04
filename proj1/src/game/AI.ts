@@ -57,7 +57,19 @@ export class GameAI {
    */
   static medium(player: string) {
     const AI = new GameAI(player);
-    AI.chooseMove = (state) => AI.minimax(state, 2);
+    AI.chooseMove = (state) => AI.minimax(state, 5);
+
+    return AI;
+  }
+
+  /**
+   * Creates a medium computer player.
+   * @param player the AI's symbol
+   * @returns a medium computer player
+   */
+  static hard(player: string) {
+    const AI = new GameAI(player);
+    AI.chooseMove = (state) => AI.minimax(state, 7);
 
     return AI;
   }
@@ -72,7 +84,7 @@ export class GameAI {
     return validMoves[Math.floor(Math.random() * validMoves.length)];
   }
 
-  private evaluateMove(state: GameState, move: GameMove) {
+  private evaluateState(state: GameState, move: GameMove) {
     return Object.values(heuristics).reduce(
       (value, heuristic) =>
         value + heuristic({ state, move, player: this.player, opponent: this.opponent }),
@@ -89,13 +101,10 @@ export class GameAI {
   ): Node {
     // verify if the depth limit has been reached or the node is terminal
     if (depth === 0 || node.isTerminal()) {
-      node.value = this.evaluateMove(node.state, node.move);
-      console.log(node);
+      node.value = this.evaluateState(node.state, node.move);
       return node;
     }
-
-    console.log(`depth: ${depth}`);
-
+    
     // define the algorithm variables
     let bestNode = new Node(node.state);
     let isBetterMove: (newValue: number) => boolean;

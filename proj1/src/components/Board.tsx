@@ -25,9 +25,7 @@ export default function Board({ size, state, onTileClick }: BoardProps) {
       <Tile
         key={tileIndex}
         symbol={tile}
-        disabled={
-          state.nextBoardIndex >= 0 && state.nextBoardIndex !== smallBoardIndex
-        }
+        disabled={state.nextBoardIndex >= 0 && state.nextBoardIndex !== smallBoardIndex}
         onClick={onTileClick.bind(null, smallBoardIndex, tileIndex)}
       />
     )),
