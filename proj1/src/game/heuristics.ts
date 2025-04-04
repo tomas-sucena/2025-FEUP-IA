@@ -50,6 +50,8 @@ const evaluateBoard = (
   return victoryPatterns.reduce((acc, pattern) => acc + countSymbols(pattern), 0);
 };
 
+export type Heuristic = (data: IHeuristic) => number;
+
 export const heuristics = {
   /**
    * Determines if the player has won the game.
