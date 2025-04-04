@@ -34,6 +34,7 @@ export default function Game({ size, player1, player2 }: GameProps) {
   // initialize the game state
   const [state, setState] = useState(GameState.fromSize(size));
   const player = state.nextPlayer === 'X' ? player1 : player2;
+  const ongoing = state.validMoves.length > 0; // indicates if the game is still ongoing
 
   // a function for handling tile clicks
   const onTileClick = (boardIndex: number, tileIndex: number) => {
@@ -44,7 +45,7 @@ export default function Game({ size, player1, player2 }: GameProps) {
 
   // handle computer player turns
   useEffect(() => {
-    if (player) {
+    if (player && ongoing) {
       setTimeout(() => play(player, state), 0);
     }
   });
@@ -53,7 +54,13 @@ export default function Game({ size, player1, player2 }: GameProps) {
   return (
     <>
       <Board size={size} state={state} onTileClick={onTileClick} />
-      <aside>It's {state.nextPlayer}'s turn!</aside>
+      <aside>
+        {ongoing
+          ? `It's your turn, ${state.nextPlayer}!`
+          : state.winner
+            ? `${state.winner} has won!`
+            : `It's a tie!`}
+      </aside>
     </>
   );
 }

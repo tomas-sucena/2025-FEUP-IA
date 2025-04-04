@@ -78,7 +78,10 @@ export const heuristics = {
     );
   },
   evalutateSmallBoards: ({ state, player, opponent }: IHeuristic): number => {
-    return state.smallBoards.reduce(
+    // fetch the small boards that haven't been won
+    const smallBoards = state.smallBoards.filter((_, smallBoardIndex) => state.board[smallBoardIndex] === '');
+
+    return smallBoards.reduce(
       (acc, smallBoard) =>
         acc +
         evaluateBoard(smallBoard, player, opponent, state.victoryPatterns) -
