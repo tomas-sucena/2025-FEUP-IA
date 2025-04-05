@@ -1,5 +1,6 @@
 .menu {
   display: flex;
+  position: relative;
   flex-direction: column;
   align-items: center;
   gap: 2em;
@@ -13,6 +14,14 @@
   width: 15em;
 }
 
+.menu-logo {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  transform: translate(50%, 25%);
+  width: 3em;
+}
+
 .menu small {
   opacity: 0.5;
   font-size: 0.75em;
@@ -23,11 +32,14 @@
   flex-direction: column;
   gap: 1.3em;
   padding: 0;
-  font-size: 1.1em;
   list-style: none;
 }
 
-.menu-options > li:hover {
+.menu-button {
+  font-size: 1.3em;
+}
+
+.menu-button:hover {
   scale: 1.1;
   transition-duration: 0.1s;
 }
@@ -46,17 +58,18 @@
   border-radius: 20px;
 }
 
-.menu fieldset label {
+.menu fieldset > label {
   gap: 0.5em;
   font-size: 0.7em;
 }
 
-.menu select {
-  width: 7em;
+.menu fieldset > label > * {
+  width: 10em;
 }
 
 .menu select,
 .menu input {
   border-radius: 20px;
+  font-size: 0.6em;
   text-align: center;
 }

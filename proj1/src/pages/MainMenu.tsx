@@ -12,7 +12,7 @@ export default function MainMenu() {
     <>
       <ul className="menu-options">
         {options.map((option) => (
-          <li>
+          <li className="menu-button">
             {option.route ? (
               <Link to={option.route}>{option.label}</Link>
             ) : (

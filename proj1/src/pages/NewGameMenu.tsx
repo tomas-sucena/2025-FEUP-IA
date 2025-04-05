@@ -18,10 +18,18 @@ const PlayerMenu = ({ player }: { player: number }) => {
       <legend>Player {player}</legend>
 
       <label>
+        Name
+        <input
+          name={`player-${player}-name`}
+          type="text"
+          placeholder={`Player ${player}`}
+        />
+      </label>
+
+      <label>
         Type
         <select
-          id={`player-${player}-type`}
-          name="type"
+          name={`player-${player}-name`}
           value={playerType}
           onChange={(event) => setPlayerType(event.target.value)}
           required
@@ -37,7 +45,7 @@ const PlayerMenu = ({ player }: { player: number }) => {
       {playerType === 'AI' && (
         <label>
           Difficulty
-          <select id={`player-${player}-difficulty`} name="difficulty">
+          <select name={`player-${player}-difficulty`}>
             {difficultyOptions.map((option) => (
               <option key={`difficulty-${option.depth}`} value={option.depth}>
                 {option.label}
@@ -59,14 +67,19 @@ export default function NewGameMenu() {
   ];
 
   return (
-    <form className="menu-options" method="post">
-      <label>
-        Board Size
-        <input type="number" name="size" placeholder="3" min="2" max="6" />
-      </label>
+    <>
+      <form id="game-settings" className="menu-options" method="post">
+        <label>
+          Board Size
+          <input type="number" name="size" placeholder="3" min="2" max="6" />
+        </label>
 
-      <PlayerMenu player={1} />
-      <PlayerMenu player={2} />
-    </form>
+        <PlayerMenu player={1} />
+        <PlayerMenu player={2} />
+      </form>
+      <button form="game-settings" className="menu-button">
+        Play
+      </button>
+    </>
   );
 }
