@@ -1,26 +1,19 @@
-import { useState } from 'react';
 import { GameAI } from '../game/AI';
+import { useState } from 'react';
 
 // components
-import Game from './Game';
+import Menu from './Menu';
 
 // styling
 import './App.css';
 
-enum Page {
-  Menu,
-  Game,
-  Credits,
-}
-
 export default function App() {
-  // TODO: add header and footer
+  const [content, setContent] = useState(<Menu />);
+
   return (
     <>
       <title>Ultimate Tic-Tac-Toe</title>
-      <main>
-        <Game size={2} player2={GameAI.medium('O')} />
-      </main>
+      <main>{content}</main>
     </>
   );
 }

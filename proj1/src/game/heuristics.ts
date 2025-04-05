@@ -15,6 +15,8 @@ interface IHeuristic {
   opponent: string;
 }
 
+export type Heuristic = (data: IHeuristic) => number;
+
 /**
  * Counts the number of board tiles that belong to non-blocked victory patterns.
  * @param board the board
@@ -47,10 +49,11 @@ const evaluateBoard = (
     return counter;
   };
 
-  return victoryPatterns.reduce((acc, pattern) => acc + countSymbols(pattern), 0);
+  return victoryPatterns.reduce(
+    (acc, pattern) => acc + countSymbols(pattern),
+    0,
+  );
 };
-
-export type Heuristic = (data: IHeuristic) => number;
 
 export const heuristics = {
   /**
@@ -71,22 +74,25 @@ export const heuristics = {
   loss: ({ state, opponent }: IHeuristic): number => {
     return -Weight.Max * +(state.winner === opponent);
   },
-  evalutateBigBoard: ({ state, player, opponent }: IHeuristic): number => {
+  evaluateBigBoard: ({ state, player, opponent }: IHeuristic): number => {
     return (
-      evaluateBoard(state.board, player, opponent, state.victoryPatterns) -
-      evaluateBoard(state.board, opponent, player, state.victoryPatterns)
+      Weight.A_lot *
+      (evaluateBoard(state.board, player, opponent, state.victoryPatterns) -
+        evaluateBoard(state.board, opponent, player, state.victoryPatterns))
     );
   },
-  evalutateSmallBoards: ({ state, player, opponent }: IHeuristic): number => {
-    // fetch the small boards that haven't been won
-    const smallBoards = state.smallBoards.filter((_, smallBoardIndex) => state.board[smallBoardIndex] === '');
-
-    return smallBoards.reduce(
-      (acc, smallBoard) =>
-        acc +
-        evaluateBoard(smallBoard, player, opponent, state.victoryPatterns) -
-        evaluateBoard(smallBoard, opponent, player, state.victoryPatterns),
-      0,
+  evaluateSmallBoards: ({ state, player, opponent }: IHeuristic): number => {
+    return (
+      Weight.A_little *
+      state.smallBoards
+        .filter((_, smallBoardIndex) => state.board[smallBoardIndex] === '')
+        .reduce(
+          (acc, smallBoard) =>
+            acc +
+            evaluateBoard(smallBoard, player, opponent, state.victoryPatterns) -
+            evaluateBoard(smallBoard, opponent, player, state.victoryPatterns),
+          0,
+        )
     );
   },
 };

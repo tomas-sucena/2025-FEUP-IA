@@ -28,8 +28,6 @@ export class GameAI {
   player: string;
   opponent: string;
   chooseMove?: (state: GameState) => GameMove;
-  static heuristics: Heuristic[] = [heuristics.evalutateBigBoard, heuristics.evalutateSmallBoards];
-  static terminalHeuristics: Heuristic[] = [heuristics.win, heuristics.loss];
 
   /**
    * Initializes the computer player.
@@ -90,13 +88,18 @@ export class GameAI {
    * Evaluates a terminal game state, determining if it corresponds to a win, a loss, or a tie.
    * @param state the terminal game state
    * @param move the move
-   * @param heuristics the heuristic functions that will evaluate the state
    * @returns the value of the terminal game state
    */
-  private evaluateState(state: GameState, move: GameMove, heuristics: Heuristic[]): number {
-    return heuristics.reduce(
+  private evaluateState(state: GameState, move: GameMove): number {
+    return Object.values(heuristics).reduce(
       (value, heuristic) =>
-        value + heuristic({ state, move, player: this.player, opponent: this.opponent }),
+        value +
+        heuristic({
+          state,
+          move,
+          player: this.player,
+          opponent: this.opponent,
+        }),
       0,
     );
   }
@@ -109,11 +112,8 @@ export class GameAI {
     maximize: boolean,
   ): Node {
     // verify if the depth limit has been reached or the node is terminal
-    if (node.isTerminal()) {
-      node.value = this.evaluateState(node.state, node.move, GameAI.terminalHeuristics);
-      return node;
-    } else if (depth === 0) {
-      node.value = this.evaluateState(node.state, node.move, GameAI.heuristics);
+    if (depth === 0 || node.isTerminal()) {
+      node.value = this.evaluateState(node.state, node.move);
       return node;
     }
 
@@ -168,6 +168,7 @@ export class GameAI {
   }
 
   minimax(state: GameState, depth: number): GameMove {
-    return this.minimaxDFS(new Node(state), depth, -Infinity, Infinity, true).move;
+    return this.minimaxDFS(new Node(state), depth, -Infinity, Infinity, true)
+      .move;
   }
 }
