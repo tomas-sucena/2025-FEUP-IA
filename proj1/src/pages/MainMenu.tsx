@@ -1,0 +1,24 @@
+import { Link } from 'react-router';
+
+export default function MainMenu() {
+  const options = [
+    { label: 'New Game', route: '/new-game' },
+    { label: 'Continue', route: '/game' },
+    { label: 'Load Game', action: () => {} },
+    { label: 'Credits', route: '/new-game' },
+  ];
+
+  return (
+    <ul className="menu-options">
+      {options.map((option) => (
+        <li>
+          {option.route ? (
+            <Link to={option.route}>{option.label}</Link>
+          ) : (
+            <button onClick={option.action}>{option.label}</button>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+}
