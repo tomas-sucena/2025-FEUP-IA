@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 
 export default function MainMenu() {
   const options = [
-    { label: 'New Game', route: '/new-game' },
+    { label: 'New Game', route: '/menu/new-game' },
     { label: 'Continue', route: '/game' },
     { label: 'Load Game', action: () => {} },
     { label: 'Credits', route: '/new-game' },

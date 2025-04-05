@@ -8,10 +8,10 @@ import './Menu.css';
 
 export default function Menu() {
   return (
-    <form id="menu">
+    <div id="menu">
       <img id="menu-title" src={Logo} alt="Ultimate Tic-Tac-Toe" />
       <Outlet />
       <small>Press any menu item to select</small>
-    </form>
+    </div>
   );
 }
