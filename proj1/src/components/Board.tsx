@@ -1,7 +1,11 @@
 import { GameState } from '../game/state';
 
+// assets
+import X from '../assets/X.svg';
+import O from '../assets/O.svg';
+
 // components
-import Tile from './Tile';
+import SmallBoard from './SmallBoard';
 
 // styling
 import './Board.css';
@@ -9,34 +13,37 @@ import './Board.css';
 interface BoardProps {
   /** the number of rows/columns of the board */
   size: number;
-  /** the current game state */
-  state: GameState;
+  /** an array that represents the big board */
+  board: string[];
+  /** a 2D array that represents the small boards */
+  smallBoards: string[][];
+  /** the index of the small board the next player has to play in */
+  nextSmallBoardIndex: number;
   /** a function to be called when a tile is clicked */
   onTileClick: (smallBoardIndex: number, tileIndex: number) => void;
 }
 
-export default function Board({ size, state, onTileClick }: BoardProps) {
+export default function Board({
+  size,
+  board,
+  smallBoards,
+  nextSmallBoardIndex,
+  onTileClick,
+}: BoardProps) {
   // set the board size in CSS
   const style = { '--size': size } as React.CSSProperties;
 
-  // render the board tiles
-  const tiles = state.smallBoards.map((smallBoard, smallBoardIndex) =>
-    smallBoard.map((tile, tileIndex) => (
-      <Tile
-        key={tileIndex}
-        symbol={tile}
-        disabled={state.nextBoardIndex >= 0 && state.nextBoardIndex !== smallBoardIndex}
-        onClick={onTileClick.bind(null, smallBoardIndex, tileIndex)}
-      />
-    )),
-  );
-
   return (
     <div id="board" style={style}>
-      {tiles.map((smallBoard, smallBoardIndex) => (
-        <div key={smallBoardIndex} className="small-board" style={style}>
-          {smallBoard}
-        </div>
+      {smallBoards.map((smallBoard, smallBoardIndex) => (
+        <SmallBoard
+          smallBoard={smallBoard}
+          winner={board[smallBoardIndex]}
+          disabled={
+            nextSmallBoardIndex >= 0 && nextSmallBoardIndex !== smallBoardIndex
+          }
+          onTileClick={onTileClick.bind(null, smallBoardIndex)}
+        />
       ))}
     </div>
   );

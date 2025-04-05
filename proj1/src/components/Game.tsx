@@ -22,9 +22,8 @@ const play = (player: GameAI, state: GameState) => {
   const move = player.chooseMove!(state);
 
   // find the corresponding tile
-  const tile = document.getElementsByClassName('small-board')[move.boardIndex].children[
-    move.tileIndex
-  ] as HTMLButtonElement;
+  const tile = document.getElementsByClassName('small-board')[move.boardIndex]
+    .children[move.tileIndex] as HTMLButtonElement;
 
   // click the tile
   setTimeout(() => tile.click(), Math.max(1000 - Date.now() + start, 0));
@@ -37,8 +36,8 @@ export default function Game({ size, player1, player2 }: GameProps) {
   const ongoing = state.validMoves.length > 0; // indicates if the game is still ongoing
 
   // a function for handling tile clicks
-  const onTileClick = (boardIndex: number, tileIndex: number) => {
-    if (state.makeMove(boardIndex, tileIndex)) {
+  const onTileClick = (smallBoardIndex: number, tileIndex: number) => {
+    if (state.makeMove(smallBoardIndex, tileIndex)) {
       setState(GameState.fromState(state));
     }
   };
@@ -53,7 +52,7 @@ export default function Game({ size, player1, player2 }: GameProps) {
   // render the board
   return (
     <>
-      <Board size={size} state={state} onTileClick={onTileClick} />
+      <Board {...state} onTileClick={onTileClick} />
       <aside>
         {ongoing
           ? `It's your turn, ${state.nextPlayer}!`

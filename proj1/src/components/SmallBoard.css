@@ -1,0 +1,20 @@
+.small-board {
+  display: grid;
+  position: relative;
+  grid-template-rows: repeat(var(--size), auto);
+  grid-template-columns: repeat(var(--size), auto);
+}
+
+.small-board > img {
+  position: absolute;
+  z-index: 1;
+  height: 100%;
+}
+
+.small-board[data-winner='X'] > img {
+  background-color: rgba(var(--x-color), 0.5);
+}
+
+.small-board[data-winner='O'] > img {
+  background-color: rgba(var(--o-color), 0.5);
+}

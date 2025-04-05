@@ -2,11 +2,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #bdbdbd;
-  height: 2em;
-  width: 2em;
   margin: 4px;
   border-radius: 5%;
+  background-color: #bdbdbd;
+  width: 2em;
+  height: 2em;
+}
+
+.tile > img {
+  height: 80%;
 }
 
 .tile:hover {
@@ -14,14 +18,14 @@
 }
 
 .tile[data-disabled] {
-  cursor: not-allowed;
   opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .tile[data-symbol='X'] {
-  background-color: #ff3c15;
+  background-color: rgb(var(--x-color));
 }
 
 .tile[data-symbol='O'] {
-  background-color: #694cff;
+  background-color: rgb(var(--o-color));
 }

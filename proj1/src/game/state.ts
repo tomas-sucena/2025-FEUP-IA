@@ -45,7 +45,7 @@ export class GameState {
   /** The symbol of the player that will play next. */
   nextPlayer: string;
   /** The index of the small board the next player has to play in. */
-  nextBoardIndex: number;
+  nextSmallBoardIndex: number;
   /** An array containing all the valid moves. */
   validMoves: GameMove[];
   /** An array containing all possible tile combinations that lead to victory. */
@@ -69,7 +69,7 @@ export class GameState {
     this.smallBoards = smallBoards;
     this.winner = winner;
     this.nextPlayer = nextPlayer;
-    this.nextBoardIndex = nextBoardIndex;
+    this.nextSmallBoardIndex = nextBoardIndex;
     this.validMoves = validMoves;
     this.victoryPatterns = victoryPatterns;
   }
@@ -91,7 +91,10 @@ export class GameState {
       nextPlayer: 'X',
       nextBoardIndex: -1,
       validMoves: Array.from({ length: area }).flatMap((_, boardIndex) =>
-        Array.from({ length: area }, (_, tileIndex) => new GameMove(boardIndex, tileIndex)),
+        Array.from(
+          { length: area },
+          (_, tileIndex) => new GameMove(boardIndex, tileIndex),
+        ),
       ),
       victoryPatterns: GameState.getVictoryPatterns(size),
     });
@@ -110,7 +113,7 @@ export class GameState {
       smallBoards: state.smallBoards.map((smallBoard) => [...smallBoard]),
       winner: state.winner,
       nextPlayer: state.nextPlayer,
-      nextBoardIndex: state.nextBoardIndex,
+      nextBoardIndex: state.nextSmallBoardIndex,
       validMoves: state.validMoves,
       victoryPatterns: state.victoryPatterns,
     });
@@ -140,12 +143,16 @@ export class GameState {
 
     // columns
     for (let j = 0; j < size; ++j) {
-      victoryPatterns.push(Array.from({ length: size }, (_, i) => i * size + j));
+      victoryPatterns.push(
+        Array.from({ length: size }, (_, i) => i * size + j),
+      );
     }
 
     // diagonals
     victoryPatterns.push(Array.from({ length: size }, (_, i) => i * size + i));
-    victoryPatterns.push(Array.from({ length: size }, (_, i) => size * ++i - i));
+    victoryPatterns.push(
+      Array.from({ length: size }, (_, i) => size * ++i - i),
+    );
 
     return victoryPatterns;
   }
@@ -159,7 +166,8 @@ export class GameState {
   private isValidMove(boardIndex: number, tileIndex: number): boolean {
     return (
       this.board[boardIndex] === '' &&
-      (this.nextBoardIndex < 0 || this.nextBoardIndex === boardIndex) &&
+      (this.nextSmallBoardIndex < 0 ||
+        this.nextSmallBoardIndex === boardIndex) &&
       this.smallBoards[boardIndex][tileIndex] === ''
     );
   }
@@ -171,21 +179,24 @@ export class GameState {
   private getValidMoves(): GameMove[] {
     // a function for determining the valid moves within a small board
     const getValidTiles = (smallBoardIndex: number) =>
-      this.smallBoards[smallBoardIndex].reduce((validMoves: GameMove[], symbol, tileIndex) => {
-        if (symbol === '') {
-          validMoves.push(new GameMove(smallBoardIndex, tileIndex));
-        }
+      this.smallBoards[smallBoardIndex].reduce(
+        (validMoves: GameMove[], symbol, tileIndex) => {
+          if (symbol === '') {
+            validMoves.push(new GameMove(smallBoardIndex, tileIndex));
+          }
 
-        return validMoves;
-      }, []);
+          return validMoves;
+        },
+        [],
+      );
 
-    return this.nextBoardIndex < 0
+    return this.nextSmallBoardIndex < 0
       ? // all small boards without a winner are available
         this.smallBoards
           .filter((_, smallBoardIndex) => this.board[smallBoardIndex] === '')
           .flatMap((_, smallBoardIndex) => getValidTiles(smallBoardIndex))
       : // only a specific small board is available
-        getValidTiles(this.nextBoardIndex);
+        getValidTiles(this.nextSmallBoardIndex);
   }
 
   /**
@@ -195,7 +206,9 @@ export class GameState {
    * @returns true if the player has won the board, false otherwise
    */
   private checkWinner(board: string[], player: string) {
-    return this.victoryPatterns.some((pattern) => pattern.every((i) => board[i] === player));
+    return this.victoryPatterns.some((pattern) =>
+      pattern.every((i) => board[i] === player),
+    );
   }
 
   /**
@@ -227,7 +240,7 @@ export class GameState {
       this.nextPlayer = this.nextPlayer === 'X' ? 'O' : 'X';
 
       // switch the board
-      this.nextBoardIndex = this.board[tileIndex] ? -1 : tileIndex;
+      this.nextSmallBoardIndex = this.board[tileIndex] ? -1 : tileIndex;
 
       // compute the next valid moves
       this.validMoves = this.getValidMoves();

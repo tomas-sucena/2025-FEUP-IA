@@ -19,7 +19,7 @@ export default function App() {
     <>
       <title>Ultimate Tic-Tac-Toe</title>
       <main>
-        <Game size={3} player2={GameAI.medium('O')} />
+        <Game size={2} player2={GameAI.medium('O')} />
       </main>
     </>
   );

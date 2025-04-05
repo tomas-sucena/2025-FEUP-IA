@@ -1,5 +1,4 @@
-#board,
-.small-board {
+#board {
   display: grid;
   grid-template-rows: repeat(var(--size), auto);
   grid-template-columns: repeat(var(--size), auto);
