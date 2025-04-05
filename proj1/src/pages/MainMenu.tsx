@@ -9,16 +9,19 @@ export default function MainMenu() {
   ];
 
   return (
-    <ul className="menu-options">
-      {options.map((option) => (
-        <li>
-          {option.route ? (
-            <Link to={option.route}>{option.label}</Link>
-          ) : (
-            <button onClick={option.action}>{option.label}</button>
-          )}
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul className="menu-options">
+        {options.map((option) => (
+          <li>
+            {option.route ? (
+              <Link to={option.route}>{option.label}</Link>
+            ) : (
+              <button onClick={option.action}>{option.label}</button>
+            )}
+          </li>
+        ))}
+      </ul>
+      <small>Press any menu item to select</small>
+    </>
   );
 }

@@ -1,19 +1,51 @@
-import { Form, Link } from 'react-router';
+import { useState } from 'react';
 
-const PlayerMenu = () => {
-  const typeOptions = [
-    { label: 'Human', value: false },
-    { label: 'AI', value: true },
+// a menu for configuring the players
+const PlayerMenu = ({ player }: { player: number }) => {
+  const typeOptions = ['Human', 'AI'];
+  const difficultyOptions = [
+    { label: 'Random', depth: 0 },
+    { label: 'Easy', depth: 1 },
+    { label: 'Medium', depth: 3 },
+    { label: 'Hard', depth: 5 },
   ];
+
+  // initialize the state
+  const [playerType, setPlayerType] = useState('Human');
 
   return (
     <fieldset>
-      <legend>Player</legend>
-      <select name="isAI">
-        {typeOptions.map((option) => (
-          <option value="">{option.label}</option>
-        ))}
-      </select>
+      <legend>Player {player}</legend>
+
+      <label>
+        Type
+        <select
+          id={`player-${player}-type`}
+          name="type"
+          value={playerType}
+          onChange={(event) => setPlayerType(event.target.value)}
+          required
+        >
+          {typeOptions.map((option) => (
+            <option key={`type-${option}`} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      {playerType === 'AI' && (
+        <label>
+          Difficulty
+          <select id={`player-${player}-difficulty`} name="difficulty">
+            {difficultyOptions.map((option) => (
+              <option key={`difficulty-${option.depth}`} value={option.depth}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
     </fieldset>
   );
 };
@@ -27,9 +59,14 @@ export default function NewGameMenu() {
   ];
 
   return (
-    <form method="post">
-      <label>Board Size:</label>
-      <input type="number" name="size" placeholder="3" min="2" max="5" />
+    <form className="menu-options" method="post">
+      <label>
+        Board Size
+        <input type="number" name="size" placeholder="3" min="2" max="6" />
+      </label>
+
+      <PlayerMenu player={1} />
+      <PlayerMenu player={2} />
     </form>
   );
 }
