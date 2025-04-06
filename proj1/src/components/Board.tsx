@@ -37,6 +37,7 @@ export default function Board({
     <div id="board" style={style}>
       {smallBoards.map((smallBoard, smallBoardIndex) => (
         <SmallBoard
+          key={`small-board-${smallBoardIndex}`}
           smallBoard={smallBoard}
           winner={board[smallBoardIndex]}
           disabled={

@@ -34,6 +34,7 @@ export default function SmallBoard({
       {winner && <img src={winner === 'X' ? X : O} alt={winner} />}
       {smallBoard.map((symbol, tileIndex) => (
         <Tile
+          key={`tile-${tileIndex}`}
           symbol={symbol}
           disabled={disabled}
           onClick={handleTileClick.bind(null, tileIndex)}
