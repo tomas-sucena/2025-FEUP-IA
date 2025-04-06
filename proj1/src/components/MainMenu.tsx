@@ -24,7 +24,7 @@ export default function MainMenu() {
       label: 'Rules',
       route: 'https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe',
     },
-  ];
+  ].filter((option) => !option.disabled);
 
   // a function for loading the game state from a file
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,18 +54,15 @@ export default function MainMenu() {
   return (
     <>
       <ul className="menu-options">
-        {options.map(
-          (option) =>
-            !option.disabled && (
-              <li key={`menu-button-${option.label}`} className="menu-button">
-                {option.route ? (
-                  <Link to={option.route}>{option.label}</Link>
-                ) : (
-                  <button onClick={option.action}>{option.label}</button>
-                )}
-              </li>
-            ),
-        )}
+        {options.map((option) => (
+          <li key={`menu-button-${option.label}`} className="menu-button">
+            {option.route ? (
+              <Link to={option.route}>{option.label}</Link>
+            ) : (
+              <button onClick={option.action}>{option.label}</button>
+            )}
+          </li>
+        ))}
       </ul>
       <small>Press any menu item to select</small>
 
