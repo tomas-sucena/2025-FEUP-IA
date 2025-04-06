@@ -53,7 +53,7 @@ export default function NewGameMenu() {
       >
         <label>
           Board Size
-          <input type="number" name="size" placeholder="3" min="2" max="5" />
+          <input type="number" name="size" defaultValue="3" min="2" max="5" />
         </label>
 
         <PlayerMenu symbol={'X'} />

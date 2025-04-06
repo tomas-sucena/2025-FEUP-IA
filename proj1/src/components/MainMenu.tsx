@@ -8,9 +8,14 @@ import { Link, useNavigate } from 'react-router';
 export default function MainMenu() {
   const navigate = useNavigate();
   const fileInput = useRef<HTMLInputElement>(null);
+
   const options = [
     { label: 'New Game', route: '/menu/new-game' },
-    { label: 'Continue', route: '/game' },
+    {
+      label: 'Continue',
+      route: '/game',
+      disabled: localStorage.getItem('Ultimate Tic-Tac-Toe') === null,
+    },
     {
       label: 'Load Game',
       action: () => fileInput.current?.click(),
@@ -49,15 +54,18 @@ export default function MainMenu() {
   return (
     <>
       <ul className="menu-options">
-        {options.map((option) => (
-          <li key={`menu-button-${option.label}`} className="menu-button">
-            {option.route ? (
-              <Link to={option.route}>{option.label}</Link>
-            ) : (
-              <button onClick={option.action}>{option.label}</button>
-            )}
-          </li>
-        ))}
+        {options.map(
+          (option) =>
+            !option.disabled && (
+              <li key={`menu-button-${option.label}`} className="menu-button">
+                {option.route ? (
+                  <Link to={option.route}>{option.label}</Link>
+                ) : (
+                  <button onClick={option.action}>{option.label}</button>
+                )}
+              </li>
+            ),
+        )}
       </ul>
       <small>Press any menu item to select</small>
 
