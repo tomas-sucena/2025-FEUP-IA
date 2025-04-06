@@ -1,15 +1,7 @@
 /**
  * An array that represents a move.
  */
-export class GameMove {
-  boardIndex: number;
-  tileIndex: number;
-
-  constructor(boardIndex: number, tileIndex: number) {
-    this.boardIndex = boardIndex;
-    this.tileIndex = tileIndex;
-  }
-}
+export type GameMove = [number, number];
 
 interface IGameState {
   /** the number of rows and columns of the board */
@@ -54,7 +46,7 @@ export class GameState {
   /**
    * Initializes the game state.
    */
-  private constructor({
+  constructor({
     size,
     board,
     smallBoards,
@@ -93,7 +85,7 @@ export class GameState {
       validMoves: Array.from({ length: area }).flatMap((_, boardIndex) =>
         Array.from(
           { length: area },
-          (_, tileIndex) => new GameMove(boardIndex, tileIndex),
+          (_, tileIndex) => [boardIndex, tileIndex] as GameMove,
         ),
       ),
       victoryPatterns: GameState.getVictoryPatterns(size),
@@ -105,7 +97,7 @@ export class GameState {
    * @param size the number of rows and columns of the board
    * @returns a new game state
    */
-  static fromState(state: GameState): GameState {
+  static clone(state: GameState): GameState {
     return new GameState({
       size: state.size,
       board: [...state.board],
@@ -175,7 +167,7 @@ export class GameState {
       this.smallBoards[smallBoardIndex].reduce(
         (validMoves: GameMove[], symbol, tileIndex) => {
           if (symbol === '') {
-            validMoves.push(new GameMove(smallBoardIndex, tileIndex));
+            validMoves.push([smallBoardIndex, tileIndex]);
           }
 
           return validMoves;

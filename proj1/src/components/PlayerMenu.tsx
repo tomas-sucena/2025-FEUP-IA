@@ -8,10 +8,10 @@ import { useState } from 'react';
 export default function PlayerMenu({ symbol }: { symbol: string }) {
   const typeOptions = ['Human', 'AI'];
   const difficultyOptions = [
-    { label: 'Random', depth: 0 },
-    { label: 'Easy', depth: 1 },
-    { label: 'Medium', depth: 3 },
-    { label: 'Hard', depth: 5 },
+    { label: 'Random', difficulty: 0 },
+    { label: 'Easy', difficulty: 1 },
+    { label: 'Medium', difficulty: 2 },
+    { label: 'Hard', difficulty: 3 },
   ];
 
   // initialize the state
@@ -49,11 +49,11 @@ export default function PlayerMenu({ symbol }: { symbol: string }) {
       {playerType === 'AI' && (
         <label>
           Difficulty
-          <select name={`player-${symbol}-depth`}>
+          <select name={`player-${symbol}-difficulty`}>
             {difficultyOptions.map((option) => (
               <option
                 key={`player-difficulty-${option.label}`}
-                value={option.depth}
+                value={option.difficulty}
               >
                 {option.label}
               </option>

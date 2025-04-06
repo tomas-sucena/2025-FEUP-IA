@@ -1,5 +1,5 @@
 import { GameState, GameMove } from './state';
-import { Heuristic, heuristics } from './heuristics';
+import { heuristics } from './heuristics';
 
 class Node {
   state: GameState;
@@ -7,12 +7,12 @@ class Node {
   value: number;
 
   constructor(state: GameState, move?: GameMove) {
-    this.state = GameState.fromState(state);
-    this.move = move ?? new GameMove(-1, -1);
+    this.state = GameState.clone(state);
+    this.move = move ?? [-1, -1];
     this.value = 0;
 
     if (move) {
-      this.state.makeMove(move.boardIndex, move.tileIndex);
+      this.state.makeMove(...move);
     }
   }
 
@@ -21,12 +21,36 @@ class Node {
   }
 }
 
+enum PlayerType {
+  Human,
+  RandomAI,
+  EasyAI,
+  MediumAI,
+  HardAI,
+}
+
+interface IGamePlayer {
+  /** the player's name */
+  name: string;
+  /** the player's type */
+  type: PlayerType;
+  /** the player's symbol (X or O) */
+  symbol: string;
+  /** the opponent's symbol (X or O) */
+  opponent: string;
+}
+
 /**
  * The computer player.
  */
 export class GamePlayer {
+  /** the player's name */
   name: string;
+  /** the player's type */
+  type: PlayerType;
+  /** the player's symbol (X or O) */
   symbol: string;
+  /** the opponent's symbol (X or O) */
   opponent: string;
   chooseMove?: (state: GameState) => GameMove;
 
@@ -34,36 +58,63 @@ export class GamePlayer {
    * Initializes the computer player.
    * @param name the name of the player
    * @param symbol the AI's symbol
+   * @param difficulty
    */
-  private constructor(name: string, symbol: string) {
+  constructor({ name, type, symbol, opponent }: IGamePlayer) {
     this.name = name;
+    this.type = type;
     this.symbol = symbol;
-    this.opponent = symbol === 'X' ? 'O' : 'X';
+    this.opponent = opponent;
+
+    // assign the function for choosing the move
+    switch (type) {
+      case PlayerType.RandomAI:
+        this.chooseMove = this.randomMove;
+        break;
+
+      case PlayerType.EasyAI:
+        this.chooseMove = (state) => this.minimax(state, 2);
+        break;
+
+      case PlayerType.MediumAI:
+        this.chooseMove = (state) => this.minimax(state, 5);
+        break;
+
+      case PlayerType.HardAI:
+        this.chooseMove = (state) => this.minimax(state, 7);
+        break;
+    }
   }
 
   /**
-   * Creates a random computer player.
+   * Creates a human player.
    * @param name the name of the player
    * @param symbol the player's symbol
-   * @returns a random computer player
+   * @returns a human player
    */
   static human(name: string, symbol: string) {
-    return new GamePlayer(name, symbol);
+    return new GamePlayer({
+      name,
+      type: PlayerType.Human,
+      symbol,
+      opponent: symbol === 'X' ? 'O' : 'X',
+    });
   }
 
   /**
    * Creates a computer player.
    * @param name the name of the computer player
    * @param symbol the computer player's symbol
-   * @param depth the depth the computer player will run Minimax with
+   * @param difficulty the difficulty of the computer player (from 1 to 3)
    * @returns a computer player
    */
-  static AI(name: string, symbol: string, depth: number) {
-    const AI = new GamePlayer(name, symbol);
-    AI.chooseMove =
-      depth > 0 ? (state) => AI.minimax(state, depth) : AI.randomMove;
-
-    return AI;
+  static AI(name: string, symbol: string, difficulty: number) {
+    return new GamePlayer({
+      name,
+      type: PlayerType.Human + difficulty,
+      symbol,
+      opponent: symbol === 'X' ? 'O' : 'X',
+    });
   }
 
   /**
@@ -157,6 +208,10 @@ export class GamePlayer {
     }
 
     return bestNode;
+  }
+
+  isAI(): boolean {
+    return this.type > PlayerType.Human;
   }
 
   minimax(state: GameState, depth: number): GameMove {

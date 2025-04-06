@@ -1,12 +1,10 @@
 import { BrowserRouter, Navigate, Routes, Route } from 'react-router';
 
 // components
+import GameLoader from './GameLoader';
 import MainMenu from './MainMenu';
 import NewGameMenu from './NewGameMenu';
-
-// pages
-import Game from '../pages/Game';
-import Menu from '../pages/Menu';
+import Menu from './Menu';
 
 // styling
 import './App.css';
@@ -24,7 +22,7 @@ export default function App() {
             <Route path="new-game" element={<NewGameMenu />} />
           </Route>
 
-          <Route path="game" element={<Game size={2} />} />
+          <Route path="game" element={<GameLoader />} />
         </Routes>
       </main>
     </BrowserRouter>

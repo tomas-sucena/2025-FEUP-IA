@@ -10,11 +10,13 @@ const parsePlayer = (data: FormData, symbol: string): GamePlayer => {
   const name: string =
     data.get(`${player}-name`)?.toString() || `Player ${symbol}`;
   const type: string = data.get(`${player}-type`)!.toString();
-  const depth: number = Number(data.get(`${player}-depth`)?.toString());
+  const difficulty: number = Number(
+    data.get(`${player}-difficulty`)?.toString(),
+  );
 
   return type === 'Human'
     ? GamePlayer.human(name, symbol)
-    : GamePlayer.AI(name, symbol, depth);
+    : GamePlayer.AI(name, symbol, difficulty);
 };
 
 export default function NewGameMenu() {
@@ -28,15 +30,23 @@ export default function NewGameMenu() {
     // fetch the form data
     const data = new FormData(event.currentTarget);
 
-    // initialize the game state
-    const initialGameState = GameState.fromSize(Number(data.get('size')) || 3);
+    // initialize the game variables
+    const gameState = GameState.fromSize(Number(data.get('size')) || 3);
     const playerX = parsePlayer(data, 'X');
     const playerO = parsePlayer(data, 'O');
 
+    // store the data
+    localStorage.setItem(
+      'Ultimate Tic-Tac-Toe',
+      JSON.stringify({
+        gameState: JSON.stringify(gameState),
+        playerX: JSON.stringify(playerX),
+        playerO: JSON.stringify(playerO),
+      }),
+    );
+
     // redirect to the game
-    navigate('/game', {
-      state: { initialGameState, playerX, playerO },
-    });
+    navigate('/game');
   };
 
   return (
