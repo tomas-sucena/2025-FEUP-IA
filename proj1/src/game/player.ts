@@ -67,23 +67,10 @@ export class GamePlayer {
     this.opponent = opponent;
 
     // assign the function for choosing the move
-    switch (type) {
-      case PlayerType.RandomAI:
-        this.chooseMove = this.randomMove;
-        break;
-
-      case PlayerType.EasyAI:
-        this.chooseMove = (state) => this.minimax(state, 2);
-        break;
-
-      case PlayerType.MediumAI:
-        this.chooseMove = (state) => this.minimax(state, 5);
-        break;
-
-      case PlayerType.HardAI:
-        this.chooseMove = (state) => this.minimax(state, 7);
-        break;
-    }
+    this.chooseMove =
+      type === PlayerType.RandomAI
+        ? this.randomMove
+        : (state) => this.minimax(state, 1 + 2 * type);
   }
 
   /**

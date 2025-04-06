@@ -46,7 +46,7 @@ export default function Game({ initialState, playerX, playerO }: GameProps) {
   useEffect(() => {
     // handle computer player turns
     if (player.isAI() && ongoing) {
-      setTimeout(() => play(player, state), 2);
+      setTimeout(() => play(player, state), 5);
     }
 
     // save the game

@@ -2,10 +2,11 @@ import { GameState, GameMove } from './state';
 
 enum Weight {
   Max = 1_000_000,
-  A_lot = 3000,
-  Average = 1000,
-  A_little = 30,
-  Min = 10,
+  A_lot_more = 3000,
+  A_lot = 1000,
+  Average = 500,
+  A_little_more = 30,
+  A_little = 10,
 }
 
 interface IHeuristic {
@@ -77,13 +78,13 @@ export const heuristics = {
   /**
    * Determines if the opponent can choose the small board to play on in the next turn.
    * @param state the game state
-   * @param opponent the opponent
+   * @param player the player
    * @returns a heuristic value indicating if the opponent can choose the next small board
    */
-  avoidFreeMove: ({ state, opponent }: IHeuristic): number => {
+  avoidFreeMove: ({ state, player }: IHeuristic): number => {
     return (
-      Weight.A_lot *
-      +(state.nextSmallBoardIndex < 0 && state.nextPlayer === opponent)
+      Weight.Average *
+      +(state.nextSmallBoardIndex < 0 && (state.nextPlayer === player ? 1 : -1))
     );
   },
   /**
@@ -95,9 +96,9 @@ export const heuristics = {
    */
   evaluateBigBoard: ({ state, player, opponent }: IHeuristic): number => {
     return (
-      Weight.Average *
-        evaluateBoard(state.board, player, opponent, state.victoryPatterns) -
       Weight.A_lot *
+        evaluateBoard(state.board, player, opponent, state.victoryPatterns) -
+      Weight.A_lot_more *
         evaluateBoard(state.board, opponent, player, state.victoryPatterns)
     );
   },
@@ -114,9 +115,9 @@ export const heuristics = {
       .reduce(
         (acc, smallBoard) =>
           acc +
-          Weight.Min *
-            evaluateBoard(smallBoard, player, opponent, state.victoryPatterns) -
           Weight.A_little *
+            evaluateBoard(smallBoard, player, opponent, state.victoryPatterns) -
+          Weight.A_little_more *
             evaluateBoard(smallBoard, opponent, player, state.victoryPatterns),
         0,
       );
