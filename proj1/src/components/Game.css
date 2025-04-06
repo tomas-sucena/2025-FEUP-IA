@@ -1,5 +1,6 @@
 .download-button {
   align-self: flex-end;
+  color: white;
 }
 
 .download-button > img {
