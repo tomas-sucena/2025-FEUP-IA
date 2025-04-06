@@ -43,15 +43,13 @@ export default function Game({ initialState, playerX, playerO }: GameProps) {
     }
   };
 
-  // handle computer player turns
   useEffect(() => {
+    // handle computer player turns
     if (player.isAI() && ongoing) {
       setTimeout(() => play(player, state), 0);
     }
-  }, [state]);
 
-  // save the game
-  useEffect(() => {
+    // save the game
     saveGame(state, playerX, playerO);
   }, [state]);
 
@@ -59,13 +57,13 @@ export default function Game({ initialState, playerX, playerO }: GameProps) {
   return (
     <>
       <Board {...state} handleTileClick={handleTileClick} />
-      <aside>
+      <p>
         {ongoing
-          ? `It's your turn, ${state.nextPlayer}!`
+          ? `It's your turn, ${player.name}!`
           : state.winner
-            ? `${state.winner} has won!`
+            ? `${player.name} has won!`
             : `It's a tie!`}
-      </aside>
+      </p>
     </>
   );
 }
