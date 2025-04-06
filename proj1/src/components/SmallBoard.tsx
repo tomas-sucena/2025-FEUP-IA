@@ -1,3 +1,7 @@
+// assets
+import X from '../assets/X.svg';
+import O from '../assets/O.svg';
+
 // components
 import Tile from './Tile';
 
@@ -5,40 +9,36 @@ import Tile from './Tile';
 import './SmallBoard.css';
 
 interface SmallBoardProps {
-  /** the number of rows/columns of the small board */
-  size: number;
   /** an array representing the tiles of the small board */
-  tiles: string[];
-  /** indicates if the small board should appear highlighted */
-  highlight: boolean;
+  smallBoard: string[];
+  /** the symbol of the player who won the board */
+  winner: string;
+  /** indicates if the tiles on the small board can be clicked */
+  disabled: boolean;
   /** a function to be called when a tile is clicked */
   handleTileClick: (tileIndex: number) => void;
 }
 
 export default function SmallBoard({
-  size,
-  tiles,
-  highlight,
+  smallBoard,
+  winner,
+  disabled,
   handleTileClick,
 }: SmallBoardProps) {
   return (
     <div
       className="small-board"
-      data-highlight={highlight ? 'data-highlight' : null}
+      data-winner={winner || null}
+      data-disabled={disabled || null}
     >
-      {Array.from({ length: size }).map((_, i) => (
-        <div className="small-board-row" key={i}>
-          {Array.from({ length: size }).map((_, j) => {
-            const index = i * size + j; // the index of the tile
-            return (
-              <Tile
-                symbol={tiles[index]}
-                handleTileClick={handleTileClick.bind(null, index)}
-                key={j}
-              />
-            );
-          })}
-        </div>
+      {winner && <img src={winner === 'X' ? X : O} alt={winner} />}
+      {smallBoard.map((symbol, tileIndex) => (
+        <Tile
+          key={`tile-${tileIndex}`}
+          symbol={symbol}
+          disabled={disabled}
+          onClick={handleTileClick.bind(null, tileIndex)}
+        />
       ))}
     </div>
   );

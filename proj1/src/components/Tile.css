@@ -2,21 +2,30 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #bdbdbd;
-  height: 2em;
-  width: 2em;
   margin: 4px;
   border-radius: 5%;
+  background-color: #bdbdbd;
+  width: 2em;
+  height: 2em;
+}
+
+.tile > img {
+  height: 80%;
 }
 
 .tile:hover {
   background-color: #696969;
 }
 
+.tile[data-disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .tile[data-symbol='X'] {
-  background-color: red;
+  background-color: rgb(var(--x-color));
 }
 
 .tile[data-symbol='O'] {
-  background-color: blue;
+  background-color: rgb(var(--o-color));
 }

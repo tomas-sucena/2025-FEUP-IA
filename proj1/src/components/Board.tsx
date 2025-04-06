@@ -1,7 +1,3 @@
-import { useState, useEffect } from 'react';
-import GameController from '../game/controller';
-import GameState from '../game/state';
-
 // components
 import SmallBoard from './SmallBoard';
 
@@ -11,49 +7,40 @@ import './Board.css';
 interface BoardProps {
   /** the number of rows/columns of the board */
   size: number;
-  /** the initial game state */
-  initialState?: GameState;
-  /** callback for when the game state changes */
-  onStateChange?: (state: GameState) => void;
+  /** an array that represents the big board */
+  board: string[];
+  /** a 2D array that represents the small boards */
+  smallBoards: string[][];
+  /** the index of the small board the next player has to play in */
+  nextSmallBoardIndex: number;
+  /** a function to be called when a tile is clicked */
+  handleTileClick: (smallBoardIndex: number, tileIndex: number) => void;
 }
 
-export default function Board({ size, initialState, onStateChange }: BoardProps) {
-  // initialize the game state
-  const [state, setState] = useState(initialState ?? new GameState({ size }));
-  const controller = new GameController(size);
-
-  // Call onStateChange whenever state changes
-  useEffect(() => {
-    if (onStateChange) {
-      onStateChange(state);
-    }
-  }, [state, onStateChange]);
-
-  // a function to be called when a tile is clicked
-  const handleTileClick = (boardIndex: number, tileIndex: number) => {
-    if (controller.makeMove(state, boardIndex, tileIndex)) {
-      const newState = new GameState(state);
-      setState(newState);
-    }
-  };
+export default function Board({
+  size,
+  board,
+  smallBoards,
+  nextSmallBoardIndex,
+  handleTileClick,
+}: BoardProps) {
+  // set the board size in CSS
+  const style = { '--size': size } as React.CSSProperties;
 
   return (
-    <div id="board">
-      {Array.from({ length: size }).map((_, i) => (
-        <div className="board-row" key={i}>
-          {Array.from({ length: size }).map((_, j) => {
-            const index = i * size + j; // the index of the small board
-            return (
-              <SmallBoard
-                size={size}
-                tiles={state.tiles[index]}
-                highlight={state.nextBoardIndex === index}
-                handleTileClick={handleTileClick.bind(null, index)}
-                key={j}
-              />
-            );
-          })}
-        </div>
+    <div id="board" style={style}>
+      {smallBoards.map((smallBoard, smallBoardIndex) => (
+        <SmallBoard
+          key={`small-board-${smallBoardIndex}`}
+          smallBoard={smallBoard}
+          winner={board[smallBoardIndex]}
+          disabled={
+            board[smallBoardIndex] !== '' ||
+            (nextSmallBoardIndex >= 0 &&
+              nextSmallBoardIndex !== smallBoardIndex)
+          }
+          handleTileClick={handleTileClick.bind(null, smallBoardIndex)}
+        />
       ))}
     </div>
   );

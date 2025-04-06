@@ -1,13 +1,23 @@
 .small-board {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  position: relative;
+  grid-template-rows: repeat(var(--size), auto);
+  grid-template-columns: repeat(var(--size), auto);
 }
 
-.small-board[data-highlight] {
-  background-color: #7e7e7e;
+.small-board > img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  height: 80%;
 }
 
-.small-board-row {
-  display: flex;
-  flex-direction: row;
+.small-board[data-winner='X'] {
+  background-color: rgb(var(--x-color));
+}
+
+.small-board[data-winner='O'] {
+  background-color: rgb(var(--o-color));
 }

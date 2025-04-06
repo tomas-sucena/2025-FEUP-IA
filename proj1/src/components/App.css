@@ -1,0 +1,19 @@
+#app,
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#app {
+  background-color: #282c34;
+  min-height: 100vh;
+  color: white;
+  font-size: calc(10px + 2vmin);
+  text-align: center;
+}
+
+main {
+  gap: 0.5em;
+}

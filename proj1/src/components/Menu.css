@@ -1,58 +1,75 @@
-.menu-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #282c34; /* Dark charcoal background matching the image */
-  }
-  
-  .menu-panel {
-    background-color: rgba(20, 22, 28, 0.8);
-    padding: 2rem;
-    border-radius: 0.5rem;
-    border: 2px solid #d1d1d1;
-    width: 16rem;
-  }
-  
-  .menu-title {
-    color: #d1d1d1;
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 1.5rem;
-  }
-  
-  .menu-items {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  
-  .menu-item {
-    width: 100%;
-    padding: 0.5rem 1rem;
-    text-align: left;
-    transition: all 0.2s;
-    border-radius: 0.25rem;
-    background-color: transparent;
-    color: #d1d1d1;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .menu-item:hover {
-    background-color: #3a3e47;
-  }
-  
-  .menu-item-active {
-    background-color: #4a4f5a;
-    color: white;
-    transform: translateX(0.5rem);
-  }
-  
-  .menu-footer {
-    margin-top: 2rem;
-    color: #a0a0a0;
-    font-size: 0.75rem;
-    text-align: center;
-  }
+.menu {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  gap: 2em;
+  border: medium solid #c4c6c9;
+  border-radius: 20px;
+  background-color: #171b21;
+  padding: 2em;
+}
+
+.menu-title {
+  width: 15em;
+}
+
+.menu-logo {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  transform: translate(50%, 25%);
+  width: 3em;
+}
+
+.menu small {
+  opacity: 0.5;
+  font-size: 0.75em;
+}
+
+.menu-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3em;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-button {
+  font-size: 1.3em;
+}
+
+.menu-button:hover {
+  scale: 1.1;
+  transition-duration: 0.1s;
+}
+
+.menu label {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+
+.menu fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  border-radius: 20px;
+}
+
+.menu fieldset > label {
+  gap: 0.5em;
+  font-size: 0.7em;
+}
+
+.menu fieldset > label > * {
+  width: 10em;
+}
+
+.menu select,
+.menu input {
+  border-radius: 20px;
+  font-size: 0.6em;
+  text-align: center;
+}
