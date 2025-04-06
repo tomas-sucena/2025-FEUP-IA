@@ -105,13 +105,13 @@ export class GamePlayer {
    * Creates a computer player.
    * @param name the name of the computer player
    * @param symbol the computer player's symbol
-   * @param difficulty the difficulty of the computer player (from 1 to 3)
+   * @param difficulty the difficulty of the computer player (from 0 to 3)
    * @returns a computer player
    */
   static AI(name: string, symbol: string, difficulty: number) {
     return new GamePlayer({
       name,
-      type: PlayerType.Human + difficulty,
+      type: PlayerType.RandomAI + difficulty,
       symbol,
       opponent: symbol === 'X' ? 'O' : 'X',
     });
