@@ -134,6 +134,15 @@ export class GamePlayer {
     );
   }
 
+  /**
+   * An implementation of the Minimax depth-first search.
+   * @param node the current node
+   * @param depth the current depth
+   * @param alpha the minimum score that the maximizing player is assured
+   * @param beta the maximum score that the minimizing player is assured of
+   * @param maximize indicates whether it is the maximizing player's turn
+   * @returns the node corresponding to the best move the player can make
+   */
   private minimaxDFS(
     node: Node,
     depth: number,
@@ -197,10 +206,20 @@ export class GamePlayer {
     return bestNode;
   }
 
+  /**
+   * Indicates whether the player is a computer player.
+   * @returns a boolean indicating if the player is a computer player
+   */
   isAI(): boolean {
     return this.type > PlayerType.Human;
   }
 
+  /**
+   * An implementation of the Minimax algorithm.
+   * @param state the game state
+   * @param depth the depth with which the algorithm will be called
+   * @returns the best move the player can make
+   */
   minimax(state: GameState, depth: number): GameMove {
     return this.minimaxDFS(new Node(state), depth, -Infinity, Infinity, true)
       .move;

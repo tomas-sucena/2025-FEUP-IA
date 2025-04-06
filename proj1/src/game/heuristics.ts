@@ -76,10 +76,10 @@ export const heuristics = {
     return -Weight.Max * +(state.winner === opponent);
   },
   /**
-   * Determines if the opponent can choose the small board to play on in the next turn.
+   * Determines if the opponent can choose the small board where they will play.
    * @param state the game state
    * @param player the player
-   * @returns a heuristic value indicating if the opponent can choose the next small board
+   * @returns a heuristic value indicating if the opponent can choose the small board where they will play
    */
   avoidFreeMove: ({ state, player }: IHeuristic): number => {
     return (

@@ -15,17 +15,17 @@ import './Game.css';
 interface GameProps {
   /** the initial game state */
   initialState: GameState;
-  /** the first player */
+  /** the player whose symbol is X */
   playerX: GamePlayer;
-  /** the second player */
+  /** the player whose symbol is O */
   playerO: GamePlayer;
 }
 
 /**
  * Creates an URL for downloading the game state.
  * @param state the game state
- * @param playerX the first player
- * @param playerO the second player
+ * @param playerX the player whose symbol is X
+ * @param playerO the player whose symbol is O
  * @returns an URL for downloading the game state
  */
 const getDownloadURL = (
@@ -55,6 +55,13 @@ const play = (player: GamePlayer, state: GameState) => {
   setTimeout(() => tile.click(), Math.max(1000 - Date.now() + start, 0));
 };
 
+/**
+ * The game view.
+ * @param initialState the initial game state
+ * @param playerX the player whose symbol is X
+ * @param playerO the player whose symbol is O
+ * @returns the game view
+ */
 export default function Game({ initialState, playerX, playerO }: GameProps) {
   // initialize the game state
   const [state, setState] = useState(initialState);
@@ -78,7 +85,6 @@ export default function Game({ initialState, playerX, playerO }: GameProps) {
     saveGame(state, playerX, playerO);
   });
 
-  // render the board
   return (
     <>
       <a
