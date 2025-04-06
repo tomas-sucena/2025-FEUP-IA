@@ -105,7 +105,7 @@ export class GameState {
       winner: state.winner,
       nextPlayer: state.nextPlayer,
       nextSmallBoardIndex: state.nextSmallBoardIndex,
-      validMoves: state.validMoves,
+      validMoves: [...state.validMoves],
       victoryPatterns: state.victoryPatterns,
     });
   }
@@ -177,9 +177,11 @@ export class GameState {
 
     return this.nextSmallBoardIndex < 0
       ? // all small boards without a winner are available
-        this.smallBoards
-          .filter((_, smallBoardIndex) => this.board[smallBoardIndex] === '')
-          .flatMap((_, smallBoardIndex) => getValidTiles(smallBoardIndex))
+        this.smallBoards.flatMap((_, smallBoardIndex) =>
+          this.board[smallBoardIndex] === ''
+            ? getValidTiles(smallBoardIndex)
+            : [],
+        )
       : // only a specific small board is available
         getValidTiles(this.nextSmallBoardIndex);
   }

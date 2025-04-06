@@ -3,7 +3,8 @@ import { GameState, GameMove } from './state';
 enum Weight {
   Max = 1_000_000,
   A_lot = 500,
-  Average = 50,
+  Average = 100,
+  A_little_more = 50,
   A_little = 30,
   Min = 10,
 }
@@ -82,17 +83,16 @@ export const heuristics = {
     );
   },
   evaluateSmallBoards: ({ state, player, opponent }: IHeuristic): number => {
-    return (
-      Weight.A_little *
-      state.smallBoards
-        .filter((_, smallBoardIndex) => state.board[smallBoardIndex] === '')
-        .reduce(
-          (acc, smallBoard) =>
-            acc +
+    return state.smallBoards
+      .filter((_, smallBoardIndex) => state.board[smallBoardIndex] === '')
+      .reduce(
+        (acc, smallBoard) =>
+          acc +
+          Weight.A_little *
             evaluateBoard(smallBoard, player, opponent, state.victoryPatterns) -
+          Weight.A_little_more *
             evaluateBoard(smallBoard, opponent, player, state.victoryPatterns),
-          0,
-        )
-    );
+        0,
+      );
   },
 };

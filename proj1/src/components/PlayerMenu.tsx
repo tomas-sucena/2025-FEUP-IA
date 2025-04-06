@@ -8,7 +8,7 @@ import { useState } from 'react';
 export default function PlayerMenu({ symbol }: { symbol: string }) {
   const typeOptions = ['Human', 'AI'];
   const difficultyOptions = [
-    { label: 'Random', difficulty: 0 },
+    { label: 'Very Easy', difficulty: 0 },
     { label: 'Easy', difficulty: 1 },
     { label: 'Medium', difficulty: 2 },
     { label: 'Hard', difficulty: 3 },
