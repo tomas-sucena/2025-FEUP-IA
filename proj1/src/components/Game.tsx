@@ -4,6 +4,7 @@ import { GamePlayer } from '../game/player';
 
 // components
 import Board from '../components/Board';
+import { saveGame } from './GameLoader';
 
 interface GameProps {
   /** the initial game state */
@@ -47,6 +48,11 @@ export default function Game({ initialState, playerX, playerO }: GameProps) {
     if (player.isAI() && ongoing) {
       setTimeout(() => play(player, state), 0);
     }
+  }, [state]);
+
+  // save the game
+  useEffect(() => {
+    saveGame(state, playerX, playerO);
   }, [state]);
 
   // render the board

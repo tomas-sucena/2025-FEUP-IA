@@ -4,6 +4,7 @@ import { GamePlayer } from '../game/player';
 
 // components
 import PlayerMenu from './PlayerMenu';
+import { saveGame } from './GameLoader';
 
 const parsePlayer = (data: FormData, symbol: string): GamePlayer => {
   const player = `player-${symbol}`;
@@ -36,14 +37,7 @@ export default function NewGameMenu() {
     const playerO = parsePlayer(data, 'O');
 
     // store the data
-    localStorage.setItem(
-      'Ultimate Tic-Tac-Toe',
-      JSON.stringify({
-        gameState: JSON.stringify(gameState),
-        playerX: JSON.stringify(playerX),
-        playerO: JSON.stringify(playerO),
-      }),
-    );
+    saveGame(gameState, playerX, playerO);
 
     // redirect to the game
     navigate('/game');

@@ -5,6 +5,23 @@ import { GamePlayer } from '../game/player';
 // components
 import Game from './Game';
 
+export const saveGame = (
+  state: GameState,
+  playerX: GamePlayer,
+  playerO: GamePlayer,
+) => {
+  // serialize the data
+  const serializedData = JSON.stringify({
+    gameState: JSON.stringify(state),
+    playerX: JSON.stringify(playerX),
+    playerO: JSON.stringify(playerO),
+  });
+
+  // save the data on the browser's local storage
+  localStorage.setItem('Ultimate Tic-Tac-Toe', serializedData);
+};
+
+// A function that loads the saved game data, if any.
 const loadGame = () => {
   // fetch the data
   const data = JSON.parse(localStorage.getItem('Ultimate Tic-Tac-Toe') ?? '{}');
