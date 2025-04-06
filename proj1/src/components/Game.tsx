@@ -51,7 +51,7 @@ export default function Game({ initialState, playerX, playerO }: GameProps) {
 
     // save the game
     saveGame(state, playerX, playerO);
-  }, [state]);
+  });
 
   // render the board
   return (

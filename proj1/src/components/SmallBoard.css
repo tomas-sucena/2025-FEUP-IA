@@ -15,9 +15,9 @@
 }
 
 .small-board[data-winner='X'] {
-  background-color: rgba(var(--x-color), 0.5);
+  background-color: rgb(var(--x-color));
 }
 
 .small-board[data-winner='O'] {
-  background-color: rgba(var(--o-color), 0.5);
+  background-color: rgb(var(--o-color));
 }

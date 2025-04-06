@@ -2,9 +2,8 @@ import { GameState, GameMove } from './state';
 
 enum Weight {
   Max = 1_000_000,
-  A_lot = 500,
-  Average = 100,
-  A_little_more = 50,
+  A_lot = 3000,
+  Average = 1000,
   A_little = 30,
   Min = 10,
 }
@@ -61,7 +60,7 @@ export const heuristics = {
    * Determines if the player has won the game.
    * @param state the game state
    * @param player the player
-   * @returns true if the player has won the game, false otherwise
+   * @returns a heuristic value indicating if the player has won the game
    */
   win: ({ state, player }: IHeuristic): number => {
     return Weight.Max * +(state.winner === player);
@@ -70,27 +69,42 @@ export const heuristics = {
    * Determines if the opponent has won the game.
    * @param state the game state
    * @param opponent the opponent
-   * @returns true if the opponent has lost the game, false otherwise
+   * @returns a heuristic value indicating if the opponent has won the game
    */
   loss: ({ state, opponent }: IHeuristic): number => {
     return -Weight.Max * +(state.winner === opponent);
   },
+  /**
+   * Determines if the current state favors the player by evaluating the big board.
+   * @param state the game state
+   * @param player the player
+   * @param opponent the opponent
+   * @returns a heuristic value indicating if the current state favors the player
+   */
   evaluateBigBoard: ({ state, player, opponent }: IHeuristic): number => {
     return (
+      Weight.Average *
+        evaluateBoard(state.board, player, opponent, state.victoryPatterns) -
       Weight.A_lot *
-      (evaluateBoard(state.board, player, opponent, state.victoryPatterns) -
-        evaluateBoard(state.board, opponent, player, state.victoryPatterns))
+        evaluateBoard(state.board, opponent, player, state.victoryPatterns)
     );
   },
+  /**
+   * Determines if the current state favors the player by evaluating the small boards.
+   * @param state the game state
+   * @param player the player
+   * @param opponent the opponent
+   * @returns a heuristic value indicating if the current state favors the player
+   */
   evaluateSmallBoards: ({ state, player, opponent }: IHeuristic): number => {
     return state.smallBoards
       .filter((_, smallBoardIndex) => state.board[smallBoardIndex] === '')
       .reduce(
         (acc, smallBoard) =>
           acc +
-          Weight.A_little *
+          Weight.Min *
             evaluateBoard(smallBoard, player, opponent, state.victoryPatterns) -
-          Weight.A_little_more *
+          Weight.A_little *
             evaluateBoard(smallBoard, opponent, player, state.victoryPatterns),
         0,
       );

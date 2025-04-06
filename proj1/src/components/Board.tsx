@@ -1,9 +1,3 @@
-import { GameState } from '../game/state';
-
-// assets
-import X from '../assets/X.svg';
-import O from '../assets/O.svg';
-
 // components
 import SmallBoard from './SmallBoard';
 
@@ -41,7 +35,9 @@ export default function Board({
           smallBoard={smallBoard}
           winner={board[smallBoardIndex]}
           disabled={
-            nextSmallBoardIndex >= 0 && nextSmallBoardIndex !== smallBoardIndex
+            board[smallBoardIndex] !== '' ||
+            (nextSmallBoardIndex >= 0 &&
+              nextSmallBoardIndex !== smallBoardIndex)
           }
           handleTileClick={handleTileClick.bind(null, smallBoardIndex)}
         />
