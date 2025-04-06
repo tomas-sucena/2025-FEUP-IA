@@ -13,3 +13,7 @@ main {
   font-size: calc(10px + 2vmin);
   text-align: center;
 }
+
+main {
+  gap: 0.5em;
+}

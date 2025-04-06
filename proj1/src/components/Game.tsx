@@ -2,9 +2,15 @@ import { useEffect, useState } from 'react';
 import { GameState } from '../game/state';
 import { GamePlayer } from '../game/player';
 
+// assets
+import DownloadButton from '../assets/download-button.svg';
+
 // components
 import Board from '../components/Board';
-import { saveGame } from './GameLoader';
+import { saveGame, serializeGame } from './GameLoader';
+
+// styling
+import './Game.css';
 
 interface GameProps {
   /** the initial game state */
@@ -14,6 +20,25 @@ interface GameProps {
   /** the second player */
   playerO: GamePlayer;
 }
+
+/**
+ * Creates an URL for downloading the game state.
+ * @param state the game state
+ * @param playerX the first player
+ * @param playerO the second player
+ * @returns an URL for downloading the game state
+ */
+const getDownloadURL = (
+  state: GameState,
+  playerX: GamePlayer,
+  playerO: GamePlayer,
+) => {
+  // serialize the game state
+  const jsonData = serializeGame(state, playerX, playerO);
+
+  // create the URL
+  return `data:text/json;charset=utf-8,${encodeURIComponent(jsonData)}`;
+};
 
 // a function for the computer players to play
 const play = (player: GamePlayer, state: GameState) => {
@@ -56,6 +81,13 @@ export default function Game({ initialState, playerX, playerO }: GameProps) {
   // render the board
   return (
     <>
+      <a
+        className="download-button"
+        href={getDownloadURL(state, playerX, playerO)}
+        download="game_state.json"
+      >
+        <img src={DownloadButton} alt="Download button" />
+      </a>
       <Board {...state} handleTileClick={handleTileClick} />
       <p>
         {ongoing

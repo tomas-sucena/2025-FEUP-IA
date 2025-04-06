@@ -1,0 +1,12 @@
+.download-button {
+  align-self: flex-end;
+}
+
+.download-button > img {
+  width: 1.5em;
+}
+
+.download-button:hover {
+  scale: 1.1;
+  transition-duration: 0.1s;
+}
