@@ -15,7 +15,7 @@ interface IGameState {
   /** The symbol of the player that will play next. */
   nextPlayer: string;
   /* The index of the small board the next player has to play in. */
-  nextBoardIndex: number;
+  nextSmallBoardIndex: number;
   /** An array containing all the valid moves. */
   validMoves: GameMove[];
   /** An array containing all possible tile combinations that lead to victory. */
@@ -52,7 +52,7 @@ export class GameState {
     smallBoards,
     winner,
     nextPlayer,
-    nextBoardIndex,
+    nextSmallBoardIndex,
     validMoves,
     victoryPatterns,
   }: IGameState) {
@@ -61,7 +61,7 @@ export class GameState {
     this.smallBoards = smallBoards;
     this.winner = winner;
     this.nextPlayer = nextPlayer;
-    this.nextSmallBoardIndex = nextBoardIndex;
+    this.nextSmallBoardIndex = nextSmallBoardIndex;
     this.validMoves = validMoves;
     this.victoryPatterns = victoryPatterns;
   }
@@ -81,7 +81,7 @@ export class GameState {
       smallBoards: Array.from({ length: area }, () => new Array(area).fill('')),
       winner: '',
       nextPlayer: 'X',
-      nextBoardIndex: -1,
+      nextSmallBoardIndex: -1,
       validMoves: Array.from({ length: area }).flatMap((_, boardIndex) =>
         Array.from(
           { length: area },
@@ -104,7 +104,7 @@ export class GameState {
       smallBoards: state.smallBoards.map((smallBoard) => [...smallBoard]),
       winner: state.winner,
       nextPlayer: state.nextPlayer,
-      nextBoardIndex: state.nextSmallBoardIndex,
+      nextSmallBoardIndex: state.nextSmallBoardIndex,
       validMoves: state.validMoves,
       victoryPatterns: state.victoryPatterns,
     });
