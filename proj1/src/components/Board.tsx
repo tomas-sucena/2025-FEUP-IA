@@ -20,7 +20,7 @@ interface BoardProps {
   /** the index of the small board the next player has to play in */
   nextSmallBoardIndex: number;
   /** a function to be called when a tile is clicked */
-  onTileClick: (smallBoardIndex: number, tileIndex: number) => void;
+  handleTileClick: (smallBoardIndex: number, tileIndex: number) => void;
 }
 
 export default function Board({
@@ -28,7 +28,7 @@ export default function Board({
   board,
   smallBoards,
   nextSmallBoardIndex,
-  onTileClick,
+  handleTileClick,
 }: BoardProps) {
   // set the board size in CSS
   const style = { '--size': size } as React.CSSProperties;
@@ -42,7 +42,7 @@ export default function Board({
           disabled={
             nextSmallBoardIndex >= 0 && nextSmallBoardIndex !== smallBoardIndex
           }
-          onTileClick={onTileClick.bind(null, smallBoardIndex)}
+          handleTileClick={handleTileClick.bind(null, smallBoardIndex)}
         />
       ))}
     </div>

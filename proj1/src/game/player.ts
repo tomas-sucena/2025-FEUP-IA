@@ -24,52 +24,44 @@ class Node {
 /**
  * The computer player.
  */
-export class GameAI {
-  player: string;
+export class GamePlayer {
+  name: string;
+  symbol: string;
   opponent: string;
   chooseMove?: (state: GameState) => GameMove;
 
   /**
    * Initializes the computer player.
-   * @param player the AI's symbol
+   * @param name the name of the player
+   * @param symbol the AI's symbol
    */
-  private constructor(player: string) {
-    this.player = player;
-    this.opponent = player === 'X' ? 'O' : 'X';
+  private constructor(name: string, symbol: string) {
+    this.name = name;
+    this.symbol = symbol;
+    this.opponent = symbol === 'X' ? 'O' : 'X';
   }
 
   /**
-   * Creates an easy computer player.
-   * @param player the AI's symbol
-   * @returns an easy computer player
+   * Creates a random computer player.
+   * @param name the name of the player
+   * @param symbol the player's symbol
+   * @returns a random computer player
    */
-  static easy(player: string) {
-    const AI = new GameAI(player);
-    AI.chooseMove = AI.randomMove;
-
-    return AI;
+  static human(name: string, symbol: string) {
+    return new GamePlayer(name, symbol);
   }
 
   /**
-   * Creates a medium computer player.
-   * @param player the AI's symbol
-   * @returns a medium computer player
+   * Creates a computer player.
+   * @param name the name of the computer player
+   * @param symbol the computer player's symbol
+   * @param depth the depth the computer player will run Minimax with
+   * @returns a computer player
    */
-  static medium(player: string) {
-    const AI = new GameAI(player);
-    AI.chooseMove = (state) => AI.minimax(state, 5);
-
-    return AI;
-  }
-
-  /**
-   * Creates a medium computer player.
-   * @param player the AI's symbol
-   * @returns a medium computer player
-   */
-  static hard(player: string) {
-    const AI = new GameAI(player);
-    AI.chooseMove = (state) => AI.minimax(state, 7);
+  static AI(name: string, symbol: string, depth: number) {
+    const AI = new GamePlayer(name, symbol);
+    AI.chooseMove =
+      depth > 0 ? (state) => AI.minimax(state, depth) : AI.randomMove;
 
     return AI;
   }
@@ -97,7 +89,7 @@ export class GameAI {
         heuristic({
           state,
           move,
-          player: this.player,
+          player: this.symbol,
           opponent: this.opponent,
         }),
       0,

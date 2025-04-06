@@ -1,10 +1,12 @@
 import { BrowserRouter, Navigate, Routes, Route } from 'react-router';
 
 // components
-import Game from './Game';
-import MainMenu from '../pages/MainMenu';
-import Menu from './Menu';
-import NewGameMenu from '../pages/NewGameMenu';
+import MainMenu from './MainMenu';
+import NewGameMenu from './NewGameMenu';
+
+// pages
+import Game from '../pages/Game';
+import Menu from '../pages/Menu';
 
 // styling
 import './App.css';

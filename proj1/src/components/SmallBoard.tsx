@@ -16,14 +16,14 @@ interface SmallBoardProps {
   /** indicates if the tiles on the small board can be clicked */
   disabled: boolean;
   /** a function to be called when a tile is clicked */
-  onTileClick: (tileIndex: number) => void;
+  handleTileClick: (tileIndex: number) => void;
 }
 
 export default function SmallBoard({
   smallBoard,
   winner,
   disabled,
-  onTileClick,
+  handleTileClick,
 }: SmallBoardProps) {
   return (
     <div
@@ -36,7 +36,7 @@ export default function SmallBoard({
         <Tile
           symbol={symbol}
           disabled={disabled}
-          onClick={onTileClick.bind(null, tileIndex)}
+          onClick={handleTileClick.bind(null, tileIndex)}
         />
       ))}
     </div>

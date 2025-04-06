@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 import { GameState } from '../game/state';
-import { GameAI } from '../game/AI';
+import { GamePlayer } from '../game/player';
 
 // components
-import Board from './Board';
+import Board from '../components/Board';
 
 interface GameProps {
   /** the number of rows and columns of the board */
   size: number;
   /** the first player */
-  player1?: GameAI;
+  player1?: GamePlayer;
   /** the second player */
-  player2?: GameAI;
+  player2?: GamePlayer;
 }
 
 // a function for the computer players to play
-const play = (player: GameAI, state: GameState) => {
+const play = (player: GamePlayer, state: GameState) => {
   const start = Date.now();
 
   // compute the move
@@ -36,7 +36,7 @@ export default function Game({ size, player1, player2 }: GameProps) {
   const ongoing = state.validMoves.length > 0; // indicates if the game is still ongoing
 
   // a function for handling tile clicks
-  const onTileClick = (smallBoardIndex: number, tileIndex: number) => {
+  const handleTileClick = (smallBoardIndex: number, tileIndex: number) => {
     if (state.makeMove(smallBoardIndex, tileIndex)) {
       setState(GameState.fromState(state));
     }
@@ -52,7 +52,7 @@ export default function Game({ size, player1, player2 }: GameProps) {
   // render the board
   return (
     <>
-      <Board {...state} onTileClick={onTileClick} />
+      <Board {...state} handleTileClick={handleTileClick} />
       <aside>
         {ongoing
           ? `It's your turn, ${state.nextPlayer}!`
