@@ -4,15 +4,7 @@ import { GamePlayer } from '../game/player';
 
 // components
 import Board from '../components/Board';
-
-interface GameProps {
-  /** the number of rows and columns of the board */
-  size: number;
-  /** the first player */
-  player1?: GamePlayer;
-  /** the second player */
-  player2?: GamePlayer;
-}
+import { useLocation, useNavigate } from 'react-router';
 
 // a function for the computer players to play
 const play = (player: GamePlayer, state: GameState) => {
@@ -29,35 +21,51 @@ const play = (player: GamePlayer, state: GameState) => {
   setTimeout(() => tile.click(), Math.max(1000 - Date.now() + start, 0));
 };
 
-export default function Game({ size, player1, player2 }: GameProps) {
+export default function Game() {
+  const navigate = useNavigate();
+
+  // fetch the game state
+  const { state } = useLocation();
+
+  if (!state) {
+    navigate('/menu');
+  }
+
+  const { initialGameState, playerX, playerO } = state;
+  console.log(initialGameState, playerX, playerO);
+
+  if (!initialGameState || !playerX || !playerO) {
+    navigate('/menu');
+  }
+
   // initialize the game state
-  const [state, setState] = useState(GameState.fromSize(size));
-  const player = state.nextPlayer === 'X' ? player1 : player2;
-  const ongoing = state.validMoves.length > 0; // indicates if the game is still ongoing
+  const [gameState, setState] = useState(initialGameState);
+  const player: GamePlayer = gameState.nextPlayer === 'X' ? playerX : playerO;
+  const ongoing = gameState.validMoves.length > 0; // indicates if the game is still ongoing
 
   // a function for handling tile clicks
   const handleTileClick = (smallBoardIndex: number, tileIndex: number) => {
-    if (state.makeMove(smallBoardIndex, tileIndex)) {
-      setState(GameState.fromState(state));
+    if (gameState.makeMove(smallBoardIndex, tileIndex)) {
+      setState(GameState.fromState(gameState));
     }
   };
 
   // handle computer player turns
   useEffect(() => {
-    if (player && ongoing) {
-      setTimeout(() => play(player, state), 0);
+    if (player.chooseMove && ongoing) {
+      setTimeout(() => play(player, gameState), 0);
     }
   });
 
   // render the board
   return (
     <>
-      <Board {...state} handleTileClick={handleTileClick} />
+      <Board {...gameState} handleTileClick={handleTileClick} />
       <aside>
         {ongoing
-          ? `It's your turn, ${state.nextPlayer}!`
-          : state.winner
-            ? `${state.winner} has won!`
+          ? `It's your turn, ${gameState.nextPlayer}!`
+          : gameState.winner
+            ? `${gameState.winner} has won!`
             : `It's a tie!`}
       </aside>
     </>

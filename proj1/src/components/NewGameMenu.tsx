@@ -8,7 +8,7 @@ import PlayerMenu from './PlayerMenu';
 const parsePlayer = (data: FormData, symbol: string): GamePlayer => {
   const player = `player-${symbol}`;
   const name: string =
-    data.get(`${player}-name`)?.toString() ?? `Player ${symbol}`;
+    data.get(`${player}-name`)?.toString() || `Player ${symbol}`;
   const type: string = data.get(`${player}-type`)!.toString();
   const depth: number = Number(data.get(`${player}-depth`)?.toString());
 
@@ -28,17 +28,15 @@ export default function NewGameMenu() {
     // fetch the form data
     const data = new FormData(event.currentTarget);
 
-    // initialize the game variables
-    const state = GameState.fromSize(Number(data.get('size')) || 3);
+    // initialize the game state
+    const initialGameState = GameState.fromSize(Number(data.get('size')) || 3);
     const playerX = parsePlayer(data, 'X');
     const playerO = parsePlayer(data, 'O');
 
-    // store the game variables
-    localStorage.setItem('state', JSON.stringify(state));
-    localStorage.setItem('player-X', JSON.stringify(playerX));
-    localStorage.setItem('player-O', JSON.stringify(playerO));
-
-    navigate('/game');
+    // redirect to the game
+    navigate('/game', {
+      state: { initialGameState, playerX, playerO },
+    });
   };
 
   return (

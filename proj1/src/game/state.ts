@@ -103,11 +103,10 @@ export class GameState {
   /**
    * Creates a copy of a game state.
    * @param size the number of rows and columns of the board
-   * @param move an optional move to be made
    * @returns a new game state
    */
-  static fromState(state: GameState, move?: GameMove): GameState {
-    const newState = new GameState({
+  static fromState(state: GameState): GameState {
+    return new GameState({
       size: state.size,
       board: [...state.board],
       smallBoards: state.smallBoards.map((smallBoard) => [...smallBoard]),
@@ -117,12 +116,6 @@ export class GameState {
       validMoves: state.validMoves,
       victoryPatterns: state.victoryPatterns,
     });
-
-    if (move) {
-      newState.makeMove(move.boardIndex, move.tileIndex);
-    }
-
-    return newState;
   }
 
   /**
