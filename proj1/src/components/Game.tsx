@@ -52,7 +52,7 @@ const play = (player: GamePlayer, state: GameState) => {
     .children[tileIndex] as HTMLButtonElement;
 
   // click the tile
-  setTimeout(() => tile.click(), Math.max(800 - Date.now() + start, 0));
+  setTimeout(() => tile.click(), Math.max(1000 - Date.now() + start, 0));
 };
 
 /**

@@ -9,23 +9,6 @@ export default function MainMenu() {
   const navigate = useNavigate();
   const fileInput = useRef<HTMLInputElement>(null);
 
-  const options = [
-    { label: 'New Game', route: '/menu/new-game' },
-    {
-      label: 'Continue',
-      route: '/game',
-      disabled: localStorage.getItem('Ultimate Tic-Tac-Toe') === null,
-    },
-    {
-      label: 'Load Game',
-      action: () => fileInput.current?.click(),
-    },
-    {
-      label: 'Rules',
-      route: 'https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe',
-    },
-  ].filter((option) => !option.disabled);
-
   // a function for loading the game state from a file
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -53,17 +36,30 @@ export default function MainMenu() {
 
   return (
     <>
-      <ul className="menu-options">
-        {options.map((option) => (
-          <li key={`menu-button-${option.label}`} className="menu-button">
-            {option.route ? (
-              <Link to={option.route}>{option.label}</Link>
-            ) : (
-              <button onClick={option.action}>{option.label}</button>
-            )}
-          </li>
-        ))}
-      </ul>
+      <nav className="menu-options">
+        <Link className="menu-button" to="/menu/new-game">
+          New Game
+        </Link>
+        {localStorage.getItem('Ultimate Tic-Tac-Toe') !== null && (
+          <Link className="menu-button" to="/game">
+            Continue
+          </Link>
+        )}
+        <button
+          className="menu-button"
+          onClick={() => fileInput.current?.click()}
+        >
+          Load Game
+        </button>
+        <Link
+          className="menu-button"
+          to="https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe"
+          target="_blank"
+        >
+          Rules
+        </Link>
+      </nav>
+
       <small>Press any menu item to select</small>
 
       <input
